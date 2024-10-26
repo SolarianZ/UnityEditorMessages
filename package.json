@@ -1,0 +1,22 @@
+{
+  "name": "com.greenbamboogames.editormessages",
+  "version": "1.0.2",
+  "displayName": "Editor Messages!",
+  "description": "Show custom messages in Unity Editor.",
+  "unity": "2021.3",
+  "documentationUrl": "https://github.com/SolarianZ/EditorMessages",
+  "changelogUrl": "https://github.com/SolarianZ/EditorMessages/releases",
+  "licensesUrl": "https://github.com/SolarianZ/EditorMessages/blob/main/LICENSE",
+  "keywords": [
+    "Editor",
+    "Messages",
+    "Log"
+  ],
+  "author": {
+    "name": "ZQY",
+    "email": "vdergow@hotmail.com",
+    "url": "https://github.com/SolarianZ"
+  },
+  "type": "tool",
+  "hideInEditor": false
+}
