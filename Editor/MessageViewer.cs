@@ -81,6 +81,7 @@ namespace GBG.EditorMessages.Editor
 
         private bool _createGuiEnd;
         private ToolbarToggle _lineNumberToggle;
+        private ToolbarToggle _timestampToggle;
         private ToolbarSearchField _searchField;
         private ToolbarToggle _regexToggle;
         private MessageTypeToggle _infoMessageToggle;
@@ -99,6 +100,9 @@ namespace GBG.EditorMessages.Editor
         [SerializeField]
         [HideInInspector]
         private bool _showLineNumber;
+        [SerializeField]
+        [HideInInspector]
+        private bool _showTimestamp;
         [SerializeField]
         [HideInInspector]
         private string _searchPattern;
@@ -159,6 +163,21 @@ namespace GBG.EditorMessages.Editor
             };
             _lineNumberToggle.RegisterValueChangedCallback(OnLineNumberToggleChanged);
             toolbar.Add(_lineNumberToggle);
+
+            // Timestamp Toggle
+            _timestampToggle = new ToolbarToggle
+            {
+                value = _showTimestamp,
+                text = "T",
+                tooltip = "Show Timestamp",
+                style =
+                {
+                    flexShrink = 0,
+                }
+            };
+            _timestampToggle.RegisterValueChangedCallback(OnTimestampToggleChanged);
+            toolbar.Add(_timestampToggle);
+
 
             // Search Field
             _searchField = new ToolbarSearchField
@@ -431,6 +450,7 @@ namespace GBG.EditorMessages.Editor
         private void BindMessageElement(VisualElement element, int index)
         {
             MessageElement messageElement = (MessageElement)element;
+            messageElement.ShowTimestamp = _showTimestamp;
             Message message = _filteredMessageList[index];
             int lineNumber = _showLineNumber ? index + 1 : -1;
             messageElement.SetMessage(message, lineNumber, _maxLineNumberWidth);
@@ -470,6 +490,12 @@ namespace GBG.EditorMessages.Editor
                 CalcMaxLineNumberLabelWidth();
             }
 
+            RebuildMessageListView();
+        }
+
+        private void OnTimestampToggleChanged(ChangeEvent<bool> evt)
+        {
+            _showTimestamp = _timestampToggle.value;
             RebuildMessageListView();
         }
 

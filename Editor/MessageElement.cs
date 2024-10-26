@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 using UObject = UnityEngine.Object;
 
@@ -14,17 +16,21 @@ namespace GBG.EditorMessages.Editor
         private static Texture _errorIcon;
         private static Texture _contextIcon;
         private static Texture _customDataIcon;
+        //private static Font _monospaceFont;
+        private static FontAsset _monospaceFontAsset;
 
-        public Label LineNumberLabel { get; private set; }
+        public Label LineNumberLabel { get; }
         public Image TypeImage { get; }
+        public Label TimestampLabel { get; }
+        public Label TimestampSeparatorLabel { get; }
         public Label ContentLabel { get; }
-        public VisualElement SuffixIconContainer { get; }
-        public Image ContextImage { get; private set; }
-        public Image CustomDataImage { get; private set; }
+        public Image ContextImage { get; }
+        public Image CustomDataImage { get; }
 
         public Message Message { get; private set; }
         public int LineNumber { get; private set; } = -1;
         public int LineNumberLabelWidth { get; set; } = -1;
+        public bool ShowTimestamp { get; set; } = true;
 
         public event Action<Message> WantsToProcessCustomData;
 
@@ -34,6 +40,25 @@ namespace GBG.EditorMessages.Editor
             style.flexDirection = FlexDirection.Row;
             style.paddingLeft = 4;
             style.paddingRight = 4;
+
+            if (!_monospaceFontAsset)
+            {
+                //_monospaceFont = (Font)EditorGUIUtility.LoadRequired("fonts/robotomono/robotomono-regular.ttf");
+                _monospaceFontAsset = (FontAsset)EditorGUIUtility.LoadRequired("fonts/robotomono/robotomono-regular sdf.asset");
+            }
+
+            LineNumberLabel = new Label
+            {
+                style =
+                {
+                    flexShrink = 0,
+                    marginRight = 2,
+                    overflow = Overflow.Hidden,
+                    unityTextAlign = TextAnchor.MiddleRight,
+                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                }
+            };
+            Add(LineNumberLabel);
 
             TypeImage = new Image
             {
@@ -48,6 +73,27 @@ namespace GBG.EditorMessages.Editor
             };
             Add(TypeImage);
 
+            TimestampLabel = new Label
+            {
+                style =
+                {
+                    unityTextAlign = TextAnchor.MiddleCenter,
+                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                }
+            };
+            Add(TimestampLabel);
+
+            TimestampSeparatorLabel = new Label
+            {
+                text = "|",
+                style =
+                {
+                    unityTextAlign = TextAnchor.MiddleLeft,
+                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                }
+            };
+            Add(TimestampSeparatorLabel);
+
             ContentLabel = new Label
             {
                 style =
@@ -56,19 +102,38 @@ namespace GBG.EditorMessages.Editor
                     flexShrink = 1,
                     overflow = Overflow.Hidden,
                     unityTextAlign = TextAnchor.MiddleLeft,
+                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
                 }
             };
             Add(ContentLabel);
 
-            SuffixIconContainer = new VisualElement
+            ContextImage = new Image
             {
+                tooltip = "This message has context.",
                 style =
                 {
-                    flexDirection = FlexDirection.Row,
-                    flexShrink = 0,
+                    alignSelf = Align.Center,
+                    minWidth = 16,
+                    maxWidth = 16,
+                    minHeight = 16,
+                    maxHeight = 16,
                 }
             };
-            Add(SuffixIconContainer);
+            Add(ContextImage);
+
+            CustomDataImage = new Image
+            {
+                tooltip = "This message has custom data.",
+                style =
+                {
+                    alignSelf = Align.Center,
+                    minWidth = 16,
+                    maxWidth = 16,
+                    minHeight = 16,
+                    maxHeight = 16,
+                }
+            };
+            Add(CustomDataImage);
 
             RegisterCallback<ClickEvent>(OnClick);
         }
@@ -111,6 +176,7 @@ namespace GBG.EditorMessages.Editor
             ContentLabel.text = message.Content;
 
             UpdateLineNumberLabel();
+            UpdateTimestampLabel();
             UpdateContextImage();
             UpdateCustomDataImage();
         }
@@ -119,25 +185,8 @@ namespace GBG.EditorMessages.Editor
         {
             if (LineNumber < 0)
             {
-                if (LineNumberLabel != null)
-                {
-                    LineNumberLabel.style.display = DisplayStyle.None;
-                }
+                LineNumberLabel.style.display = DisplayStyle.None;
                 return;
-            }
-
-            if (LineNumberLabel == null)
-            {
-                LineNumberLabel = new Label
-                {
-                    style =
-                    {
-                        flexShrink = 0,
-                        overflow = Overflow.Hidden,
-                        unityTextAlign = TextAnchor.MiddleRight,
-                    }
-                };
-                Insert(0, LineNumberLabel);
             }
 
             LineNumberLabel.text = LineNumber.ToString();
@@ -145,32 +194,26 @@ namespace GBG.EditorMessages.Editor
             LineNumberLabel.style.display = DisplayStyle.Flex;
         }
 
+        private void UpdateTimestampLabel()
+        {
+            if (!ShowTimestamp)
+            {
+                TimestampLabel.style.display = DisplayStyle.None;
+                TimestampSeparatorLabel.style.display = DisplayStyle.None;
+                return;
+            }
+
+            TimestampLabel.text = new DateTime(Message.Timestamp).ToString(CultureInfo.CurrentCulture);
+            TimestampLabel.style.display = DisplayStyle.Flex;
+            TimestampSeparatorLabel.style.display = DisplayStyle.Flex;
+        }
+
         private void UpdateContextImage()
         {
             if (string.IsNullOrEmpty(Message.Context))
             {
-                if (ContextImage != null)
-                {
-                    ContextImage.style.display = DisplayStyle.None;
-                }
+                ContextImage.style.display = DisplayStyle.None;
                 return;
-            }
-
-            if (ContextImage == null)
-            {
-                ContextImage = new Image
-                {
-                    tooltip = "This message has context.",
-                    style =
-                    {
-                        alignSelf = Align.Center,
-                        minWidth = 16,
-                        maxWidth = 16,
-                        minHeight = 16,
-                        maxHeight = 16,
-                    }
-                };
-                SuffixIconContainer.Insert(0, ContextImage);
             }
 
             if (!_contextIcon)
@@ -186,28 +229,8 @@ namespace GBG.EditorMessages.Editor
         {
             if (string.IsNullOrEmpty(Message.CustomData))
             {
-                if (CustomDataImage != null)
-                {
-                    CustomDataImage.style.display = DisplayStyle.None;
-                }
+                CustomDataImage.style.display = DisplayStyle.None;
                 return;
-            }
-
-            if (CustomDataImage == null)
-            {
-                CustomDataImage = new Image
-                {
-                    tooltip = "This message has custom data.",
-                    style =
-                    {
-                        alignSelf = Align.Center,
-                        minWidth = 16,
-                        maxWidth = 16,
-                        minHeight = 16,
-                        maxHeight = 16,
-                    }
-                };
-                SuffixIconContainer.Add(CustomDataImage);
             }
 
             if (!_customDataIcon)
