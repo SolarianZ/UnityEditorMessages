@@ -136,6 +136,7 @@ namespace GBG.EditorMessages.Editor
             Add(CustomDataImage);
 
             RegisterCallback<ClickEvent>(OnClick);
+            RegisterCallback<ContextClickEvent>(OnContextClick);
         }
 
         public void SetMessage(Message message, int lineNumber, int lineNumberLabelWidth = -1)
@@ -264,6 +265,28 @@ namespace GBG.EditorMessages.Editor
                     Debug.LogError($"Custom data handler is not registered: {Message}", Message.GetUnityContextObject());
                 }
             }
+        }
+
+        private void OnContextClick(ContextClickEvent evt)
+        {
+            GenericMenu menu = new GenericMenu();
+
+            // Copy Content
+            menu.AddItem(new GUIContent("Copy Content"), false, () => EditorGUIUtility.systemCopyBuffer = Message.Content);
+
+            // Copy Context
+            if (!string.IsNullOrEmpty(Message.Context))
+            {
+                menu.AddItem(new GUIContent("Copy Context"), false, () => EditorGUIUtility.systemCopyBuffer = Message.Context);
+            }
+
+            // Copy Custom Data
+            if (!string.IsNullOrEmpty(Message.CustomData))
+            {
+                menu.AddItem(new GUIContent("Copy Custom Data"), false, () => EditorGUIUtility.systemCopyBuffer = Message.CustomData);
+            }
+
+            menu.ShowAsContext();
         }
     }
 }
