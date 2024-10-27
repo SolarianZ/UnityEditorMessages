@@ -32,13 +32,14 @@ namespace GBG.EditorMessages.Editor
             }
 
             _sourcedInstanceDict ??= new Dictionary<object, MessageViewer>();
-            if (!_sourcedInstanceDict.TryGetValue(source, out MessageViewer viewer))
+            if (!_sourcedInstanceDict.TryGetValue(source, out MessageViewer viewer) || !viewer)
             {
                 viewer = CreateInstance<MessageViewer>();
-                _sourcedInstanceDict.Add(source, viewer);
+                _sourcedInstanceDict[source] = viewer;
             }
 
-            viewer.titleContent = new GUIContent($"Message Viewer({sourceName ?? source}");
+            viewer.titleContent = new GUIContent($"Message Viewer({sourceName ?? source})");
+            viewer.Source = source;
             viewer.SetMessages(messages);
             viewer.Show();
             viewer.Focus();
@@ -47,37 +48,9 @@ namespace GBG.EditorMessages.Editor
 
         public static MessageViewer Open(object source, string sourceName)
         {
-            if (source == null)
-            {
-                if (!_sourcelessInstance)
-                {
-                    _sourcelessInstance = CreateInstance<MessageViewer>();
-                    _sourcelessInstance.titleContent = new GUIContent("Message Viewer");
-                    _sourcelessInstance._sourceless = true;
-                }
-
-                _sourcelessInstance.Show();
-                _sourcelessInstance.Focus();
-                return _sourcelessInstance;
-            }
-
-            _sourcedInstanceDict ??= new Dictionary<object, MessageViewer>();
-            if (!_sourcedInstanceDict.TryGetValue(source, out MessageViewer viewer) || !viewer)
-            {
-                viewer = CreateInstance<MessageViewer>();
-                _sourcedInstanceDict[source] = viewer;
-            }
-
-            viewer.titleContent = new GUIContent($"Message Viewer({sourceName ?? source}");
-            viewer._source = source;
-            viewer.Show();
-            viewer.Focus();
-            return viewer;
+            return Open(null, source, sourceName);
         }
 
-
-        private object _source;
-        private bool _sourceless;
 
         private bool _createGuiEnd;
         private ToolbarToggle _lineNumberToggle;
@@ -90,9 +63,12 @@ namespace GBG.EditorMessages.Editor
         private ListView _messageListView;
         private Label _messageDetailsLabel;
 
-        private Action<Message> _customDataHandler;
-        private IList<Message> _allMessages;
+        public object Source { get; private set; }
+        public IList<Message> Messages { get; private set; }
+
+        private bool _sourceless;
         private readonly List<Message> _filteredMessageList = new List<Message>();
+        private Action<Message> _customDataHandler;
 
 
         #region Serialized Fields
@@ -129,7 +105,7 @@ namespace GBG.EditorMessages.Editor
             minSize = new Vector2(250, 150);
 
             _createGuiEnd = false;
-            if (_sourceless) // ���ڱ����ָ�����
+            if (_sourceless) // Used for restore status after reload assemeblies
             {
                 if (!_sourcelessInstance)
                 {
@@ -292,18 +268,14 @@ namespace GBG.EditorMessages.Editor
 
         private void Update()
         {
-            bool close = (_source == null || !(_source as UObject)) && (_sourcelessInstance != this);
-            if (close)
-            {
-                Close();
-            }
+            TryClose();
         }
 
         private void OnDisable()
         {
-            if (_source != null)
+            if (Source != null)
             {
-                _sourcedInstanceDict.Remove(_source);
+                _sourcedInstanceDict.Remove(Source);
             }
         }
 
@@ -312,7 +284,7 @@ namespace GBG.EditorMessages.Editor
 
         public void SetMessages(IList<Message> messages)
         {
-            _allMessages = messages;
+            Messages = messages;
             Refresh();
         }
 
@@ -328,7 +300,7 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            _allMessages.CountByType(out int infoCount, out int warningCount, out int errorCount);
+            Messages.CountByType(out int infoCount, out int warningCount, out int errorCount);
             _infoMessageToggle.SetMessageCount(infoCount);
             _warningMessageToggle.SetMessageCount(warningCount);
             _errorMessageToggle.SetMessageCount(errorCount);
@@ -341,16 +313,16 @@ namespace GBG.EditorMessages.Editor
         {
             _messageListView.ClearSelection();
             _filteredMessageList.Clear();
-            if (_allMessages == null)
+            if (Messages == null)
             {
                 RebuildMessageListView();
                 return;
             }
 
             bool noSearchPattern = string.IsNullOrEmpty(_searchPattern);
-            for (int i = 0; i < _allMessages.Count; i++)
+            for (int i = 0; i < Messages.Count; i++)
             {
-                Message message = _allMessages[i];
+                Message message = Messages[i];
                 switch (message.Type)
                 {
                     case MessageType.Info:
@@ -408,6 +380,25 @@ namespace GBG.EditorMessages.Editor
             RebuildMessageListView();
         }
 
+        private void TryClose()
+        {
+            if (_sourcelessInstance == this)
+            {
+                return;
+            }
+
+            if (Source == null)
+            {
+                Close();
+                return;
+            }
+
+            if (Source is UObject unitySource && !unitySource)
+            {
+                Close();
+            }
+        }
+
 
         #region List View
 
@@ -426,9 +417,9 @@ namespace GBG.EditorMessages.Editor
         private void CalcMaxLineNumberLabelWidth()
         {
             _maxLineNumberWidth = 0;
-            if (_allMessages != null)
+            if (Messages != null)
             {
-                int digit = _allMessages.Count;
+                int digit = Messages.Count;
                 while (digit > 0)
                 {
                     digit /= 10;

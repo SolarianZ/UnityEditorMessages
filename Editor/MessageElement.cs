@@ -3,7 +3,6 @@ using System.Globalization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.TextCore.Text;
 using UnityEngine.UIElements;
 using UObject = UnityEngine.Object;
 
@@ -11,14 +10,6 @@ namespace GBG.EditorMessages.Editor
 {
     public class MessageElement : VisualElement
     {
-        private static Texture _infoIcon;
-        private static Texture _warningIcon;
-        private static Texture _errorIcon;
-        private static Texture _contextIcon;
-        private static Texture _customDataIcon;
-        //private static Font _monospaceFont;
-        private static FontAsset _monospaceFontAsset;
-
         public Label LineNumberLabel { get; }
         public Image TypeImage { get; }
         public Label TimestampLabel { get; }
@@ -40,12 +31,8 @@ namespace GBG.EditorMessages.Editor
             style.flexDirection = FlexDirection.Row;
             style.paddingLeft = 4;
             style.paddingRight = 4;
+            style.minWidth = 100;
 
-            if (!_monospaceFontAsset)
-            {
-                //_monospaceFont = (Font)EditorGUIUtility.LoadRequired("fonts/robotomono/robotomono-regular.ttf");
-                _monospaceFontAsset = (FontAsset)EditorGUIUtility.LoadRequired("fonts/robotomono/robotomono-regular sdf.asset");
-            }
 
             LineNumberLabel = new Label
             {
@@ -55,7 +42,7 @@ namespace GBG.EditorMessages.Editor
                     marginRight = 2,
                     overflow = Overflow.Hidden,
                     unityTextAlign = TextAnchor.MiddleRight,
-                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
                 }
             };
             Add(LineNumberLabel);
@@ -77,8 +64,9 @@ namespace GBG.EditorMessages.Editor
             {
                 style =
                 {
+                    paddingRight = 0,
                     unityTextAlign = TextAnchor.MiddleCenter,
-                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
                 }
             };
             Add(TimestampLabel);
@@ -88,8 +76,10 @@ namespace GBG.EditorMessages.Editor
                 text = "|",
                 style =
                 {
+                    paddingLeft = 0,
+                    paddingRight = 4,
                     unityTextAlign = TextAnchor.MiddleLeft,
-                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                    //unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
                 }
             };
             Add(TimestampSeparatorLabel);
@@ -102,7 +92,7 @@ namespace GBG.EditorMessages.Editor
                     flexShrink = 1,
                     overflow = Overflow.Hidden,
                     unityTextAlign = TextAnchor.MiddleLeft,
-                    unityFontDefinition = new StyleFontDefinition(_monospaceFontAsset),
+                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
                 }
             };
             Add(ContentLabel);
@@ -142,38 +132,11 @@ namespace GBG.EditorMessages.Editor
         public void SetMessage(Message message, int lineNumber, int lineNumberLabelWidth = -1)
         {
             Assert.IsTrue(message != null);
+
             Message = message;
             LineNumber = lineNumber;
             LineNumberLabelWidth = lineNumberLabelWidth;
-
-            Texture typeIcon;
-            switch (message.Type)
-            {
-                case MessageType.Info:
-                    if (!_infoIcon)
-                    {
-                        _infoIcon = EditorGUIUtility.IconContent("console.infoicon").image;
-                    }
-                    typeIcon = _infoIcon;
-                    break;
-                case MessageType.Warning:
-                    if (!_warningIcon)
-                    {
-                        _warningIcon = EditorGUIUtility.IconContent("console.warnicon").image;
-                    }
-                    typeIcon = _warningIcon;
-                    break;
-                case MessageType.Error:
-                    if (!_errorIcon)
-                    {
-                        _errorIcon = EditorGUIUtility.IconContent("console.erroricon").image;
-                    }
-                    typeIcon = _errorIcon;
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(message.Type), message.Type, null);
-            }
-            TypeImage.image = typeIcon;
+            TypeImage.image = ResCache.GetMessageTypeIcon(message.Type);
             ContentLabel.text = message.Content;
 
             UpdateLineNumberLabel();
@@ -217,12 +180,7 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            if (!_contextIcon)
-            {
-                _contextIcon = EditorGUIUtility.IconContent("gameobject icon").image;
-            }
-
-            ContextImage.image = _contextIcon;
+            ContextImage.image = ResCache.GetContextIcon();
             ContextImage.style.display = DisplayStyle.Flex;
         }
 
@@ -234,12 +192,7 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            if (!_customDataIcon)
-            {
-                _customDataIcon = EditorGUIUtility.IconContent("customized").image;
-            }
-
-            CustomDataImage.image = _customDataIcon;
+            CustomDataImage.image = ResCache.GetCustomDataIcon();
             CustomDataImage.style.display = DisplayStyle.Flex;
         }
 
@@ -253,8 +206,7 @@ namespace GBG.EditorMessages.Editor
                     EditorGUIUtility.PingObject(context);
                 }
             }
-
-            if (evt.clickCount == 2 && !string.IsNullOrEmpty(Message?.CustomData))
+            else if (evt.clickCount == 2 && !string.IsNullOrEmpty(Message?.CustomData))
             {
                 if (WantsToProcessCustomData != null)
                 {

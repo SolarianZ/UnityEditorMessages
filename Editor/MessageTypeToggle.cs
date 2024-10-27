@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -35,18 +34,18 @@ namespace GBG.EditorMessages.Editor
             switch (messageType)
             {
                 case MessageType.Info:
-                    _icon = EditorGUIUtility.IconContent("console.infoicon").image;
-                    _iconInactive = EditorGUIUtility.IconContent("console.infoicon.inactive.sml@2x").image;
+                    _icon = ResCache.GetInfoIcon();
+                    _iconInactive = ResCache.GetInfoIcon(true);
                     break;
 
                 case MessageType.Warning:
-                    _icon = EditorGUIUtility.IconContent("console.warnicon").image;
-                    _iconInactive = EditorGUIUtility.IconContent("console.warnicon.inactive.sml@2x").image;
+                    _icon = ResCache.GetWarningIcon();
+                    _iconInactive = ResCache.GetWarningIcon(true);
                     break;
 
                 case MessageType.Error:
-                    _icon = EditorGUIUtility.IconContent("console.erroricon").image;
-                    _iconInactive = EditorGUIUtility.IconContent("console.erroricon.inactive.sml@2x").image;
+                    _icon = ResCache.GetErrorIcon();
+                    _iconInactive = ResCache.GetErrorIcon(true);
                     break;
 
                 default:
