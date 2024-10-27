@@ -34,6 +34,7 @@ namespace GBG.EditorMessages.Editor
         public object Source { get; private set; }
         public string SourceName { get; private set; }
         public IList<Message> Messages { get; private set; }
+        public int CurrentMessageIndex { get; private set; }
 
 
         public MessageBanner(object source, string sourceName, bool showMessageTypeCount = true)
@@ -79,6 +80,18 @@ namespace GBG.EditorMessages.Editor
                     overflow = Overflow.Hidden,
                     unityTextAlign = TextAnchor.MiddleLeft,
                     unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
+                    //transitionDuration = new List<TimeValue>
+                    //{
+                    //    new TimeValue(_messageContentTransitionDuration, TimeUnit.Millisecond)
+                    //},
+                    //transitionTimingFunction = new List<EasingFunction>
+                    //{
+                    //    new EasingFunction(EasingMode.EaseInOut)
+                    //},
+                    //transitionProperty = new List<StylePropertyName>
+                    //{
+                    //    new StylePropertyName("scale"),
+                    //},
                 }
             };
             Add(ContentLabel);
@@ -104,6 +117,7 @@ namespace GBG.EditorMessages.Editor
             RegisterCallback<ClickEvent>(OnClick);
             RegisterCallback<ContextClickEvent>(OnContextClick);
 
+            InitializeMessageSwitch();
         }
 
         private Image CreateMessageTypeImage(Texture defaultIcon, float iconSize)
@@ -154,7 +168,9 @@ namespace GBG.EditorMessages.Editor
 
         public void Refresh()
         {
-            Message message = (Messages?.Count ?? 0) > 0 ? Messages[Messages.Count - 1] : null;
+            CurrentMessageIndex = (Messages?.Count ?? 0) - 1;
+
+            Message message = CurrentMessageIndex > -1 ? Messages[CurrentMessageIndex] : null;
             SetMessage(message);
 
             Messages.CountByType(out int infoCount, out int warningCount, out int errorCount);
@@ -222,5 +238,70 @@ namespace GBG.EditorMessages.Editor
 
             menu.ShowAsContext();
         }
+
+
+        #region Message Transition
+
+        private uint _messageSwitchInterval = 3000;
+        /// <summary>
+        /// 消息轮播时的切换间隔（毫秒）。
+        /// 若为0，则不自动切换消息。
+        /// </summary>
+        public uint MessageSwitchInterval
+        {
+            get => _messageSwitchInterval;
+            set
+            {
+                if (_messageSwitchInterval == value)
+                {
+                    return;
+                }
+
+                bool prevDisabled = IsMessageSwitchDisabled();
+                _messageSwitchInterval = value;
+                if (!IsMessageSwitchDisabled() && prevDisabled)
+                {
+                    InitializeMessageSwitch();
+                }
+            }
+        }
+
+        public bool IsMessageSwitchDisabled()
+        {
+            return MessageSwitchInterval < 1;
+        }
+
+
+        private void InitializeMessageSwitch()
+        {
+            if (IsMessageSwitchDisabled())
+            {
+                return;
+            }
+
+            schedule.Execute(SwitchToNextMessage)
+                    .Every(MessageSwitchInterval)
+                    .StartingIn(MessageSwitchInterval)
+                    .Until(IsMessageSwitchDisabled);
+        }
+
+        private void SwitchToNextMessage()
+        {
+            if ((Messages?.Count ?? 0) < 1)
+            {
+                CurrentMessageIndex = -1;
+                return;
+            }
+
+            CurrentMessageIndex++;
+            if (CurrentMessageIndex == Messages.Count)
+            {
+                CurrentMessageIndex = 0;
+            }
+
+            SetMessage(Messages[CurrentMessageIndex]);
+        }
+
+        #endregion
     }
 }
