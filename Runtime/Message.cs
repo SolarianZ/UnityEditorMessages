@@ -18,17 +18,17 @@ namespace GBG.EditorMessages
     [Serializable]
     public class Message
     {
-        public static Message Info(string content, string tag, object context, string customData = null)
+        public static Message Info(string content, string tag = null, object context = null, string customData = null)
         {
             return new Message(MessageType.Info, DateTime.Now.Ticks, content, tag, context, customData);
         }
 
-        public static Message Warning(string content, string tag, object context, string customData = null)
+        public static Message Warning(string content, string tag = null, object context = null, string customData = null)
         {
             return new Message(MessageType.Warning, DateTime.Now.Ticks, content, tag, context, customData);
         }
 
-        public static Message Error(string content, string tag, object context, string customData = null)
+        public static Message Error(string content, string tag = null, object context = null, string customData = null)
         {
             return new Message(MessageType.Error, DateTime.Now.Ticks, content, tag, context, customData);
         }

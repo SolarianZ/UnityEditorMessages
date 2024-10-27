@@ -40,6 +40,13 @@ namespace GBG.EditorMessages.Editor
         public MessageBanner(object source, string sourceName, bool showMessageTypeCount = true)
             : this(null, source, sourceName, showMessageTypeCount) { }
 
+        /// <summary>
+        /// 消息横幅。
+        /// </summary>
+        /// <param name="messages">消息列表。</param>
+        /// <param name="source">调用源。双击横幅时，作为打开的消息查看器的调用源。</param>
+        /// <param name="sourceName">调用源的名字。</param>
+        /// <param name="showMessageTypeCount">是否显示各类型消息的计数。</param>
         public MessageBanner(IList<Message> messages, object source, string sourceName,
             bool showMessageTypeCount = true)
         {
@@ -78,8 +85,9 @@ namespace GBG.EditorMessages.Editor
                     marginRight = 2,
                     minWidth = 100,
                     overflow = Overflow.Hidden,
+                    textOverflow = TextOverflow.Ellipsis,
                     unityTextAlign = TextAnchor.MiddleLeft,
-                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
+                    unityFontDefinition = new StyleFontDefinition(EditorMessageUtility.GetMonospaceFontAsset()),
                     //transitionDuration = new List<TimeValue>
                     //{
                     //    new TimeValue(_messageContentTransitionDuration, TimeUnit.Millisecond)
@@ -96,19 +104,19 @@ namespace GBG.EditorMessages.Editor
             };
             Add(ContentLabel);
 
-            InfoTypeImage = CreateMessageTypeImage(ResCache.GetInfoIcon(true), iconSize);
+            InfoTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetInfoIcon(true), iconSize);
             Add(InfoTypeImage);
 
             InfoCountLabel = CreateMessageTypeCountLabel();
             Add(InfoCountLabel);
 
-            WarningTypeImage = CreateMessageTypeImage(ResCache.GetWarningIcon(true), iconSize);
+            WarningTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetWarningIcon(true), iconSize);
             Add(WarningTypeImage);
 
             WarningCountLabel = CreateMessageTypeCountLabel();
             Add(WarningCountLabel);
 
-            ErrorTypeImage = CreateMessageTypeImage(ResCache.GetErrorIcon(true), iconSize);
+            ErrorTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetErrorIcon(true), iconSize);
             Add(ErrorTypeImage);
 
             ErrorCountLabel = CreateMessageTypeCountLabel();
@@ -153,7 +161,7 @@ namespace GBG.EditorMessages.Editor
                     paddingRight = 0,
                     overflow = Overflow.Hidden,
                     unityTextAlign = TextAnchor.MiddleCenter,
-                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
+                    unityFontDefinition = new StyleFontDefinition(EditorMessageUtility.GetMonospaceFontAsset()),
                 }
             };
             return label;
@@ -182,7 +190,7 @@ namespace GBG.EditorMessages.Editor
 
         private void SetMessage(Message message)
         {
-            TypeImage.image = message != null ? ResCache.GetMessageTypeIcon(message.Type) : null;
+            TypeImage.image = message != null ? EditorMessageUtility.GetMessageTypeIcon(message.Type) : null;
             ContentLabel.text = message?.Content;
             ContentLabel.tooltip = message?.Content;
         }
@@ -195,15 +203,15 @@ namespace GBG.EditorMessages.Editor
             {
                 case MessageType.Info:
                     InfoCountLabel.text = text;
-                    InfoTypeImage.image = ResCache.GetInfoIcon(inactive);
+                    InfoTypeImage.image = EditorMessageUtility.GetInfoIcon(inactive);
                     break;
                 case MessageType.Warning:
                     WarningCountLabel.text = text;
-                    WarningTypeImage.image = ResCache.GetWarningIcon(inactive);
+                    WarningTypeImage.image = EditorMessageUtility.GetWarningIcon(inactive);
                     break;
                 case MessageType.Error:
                     ErrorCountLabel.text = text;
-                    ErrorTypeImage.image = ResCache.GetErrorIcon(inactive);
+                    ErrorTypeImage.image = EditorMessageUtility.GetErrorIcon(inactive);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
@@ -242,7 +250,7 @@ namespace GBG.EditorMessages.Editor
 
         #region Message Transition
 
-        private uint _messageSwitchInterval = 3000;
+        private uint _messageSwitchInterval;
         /// <summary>
         /// 消息轮播时的切换间隔（毫秒）。
         /// 若为0，则不自动切换消息。

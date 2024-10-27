@@ -14,6 +14,13 @@ namespace GBG.EditorMessages.Editor
         private static MessageViewer _sourcelessInstance;
         private static Dictionary<object, MessageViewer> _sourcedInstanceDict;
 
+        /// <summary>
+        /// 打开消息查看器窗口。
+        /// </summary>
+        /// <param name="messages">消息列表。</param>
+        /// <param name="source">调用源。当调用源变为null时，消息查看器窗口会自动关闭。若传入null，则消息查看器窗口不会自动关闭。</param>
+        /// <param name="sourceName">调用源的名字。会出现在消息查看器窗口标题中。</param>
+        /// <returns></returns>
         public static MessageViewer Open(IList<Message> messages, object source, string sourceName)
         {
             if (source == null)
@@ -67,6 +74,7 @@ namespace GBG.EditorMessages.Editor
         public IList<Message> Messages { get; private set; }
 
         private bool _sourceless;
+        private int _messageCountCache;
         private readonly List<Message> _filteredMessageList = new List<Message>();
         private Action<Message> _customDataHandler;
 
@@ -250,6 +258,16 @@ namespace GBG.EditorMessages.Editor
             _messageListView.selectionChanged += OnSelectedMessageChanged;
             messageListContainer.Add(_messageListView);
 
+            // Message Details Scroll
+            ScrollView messageDetailsScrollView = new ScrollView(ScrollViewMode.Vertical)
+            {
+                style =
+                {
+                    flexGrow = 1,
+                }
+            };
+            messageDetailsContainer.Add(messageDetailsScrollView);
+
             // Message Details Label
             _messageDetailsLabel = new Label
             {
@@ -258,9 +276,10 @@ namespace GBG.EditorMessages.Editor
                 style =
                 {
                     flexGrow = 1,
+                    whiteSpace = WhiteSpace.Normal,
                 }
             };
-            messageDetailsContainer.Add(_messageDetailsLabel);
+            messageDetailsScrollView.Add(_messageDetailsLabel);
 
             _createGuiEnd = true;
             Refresh();
@@ -268,6 +287,11 @@ namespace GBG.EditorMessages.Editor
 
         private void Update()
         {
+            if (Messages != null && Messages.Count != _messageCountCache)
+            {
+                Refresh();
+            }
+
             TryClose();
         }
 
@@ -301,6 +325,7 @@ namespace GBG.EditorMessages.Editor
             }
 
             Messages.CountByType(out int infoCount, out int warningCount, out int errorCount);
+            _messageCountCache = infoCount + warningCount + errorCount;
             _infoMessageToggle.SetMessageCount(infoCount);
             _warningMessageToggle.SetMessageCount(warningCount);
             _errorMessageToggle.SetMessageCount(errorCount);

@@ -34,18 +34,18 @@ namespace GBG.EditorMessages.Editor
             switch (messageType)
             {
                 case MessageType.Info:
-                    _icon = ResCache.GetInfoIcon();
-                    _iconInactive = ResCache.GetInfoIcon(true);
+                    _icon = EditorMessageUtility.GetInfoIcon();
+                    _iconInactive = EditorMessageUtility.GetInfoIcon(true);
                     break;
 
                 case MessageType.Warning:
-                    _icon = ResCache.GetWarningIcon();
-                    _iconInactive = ResCache.GetWarningIcon(true);
+                    _icon = EditorMessageUtility.GetWarningIcon();
+                    _iconInactive = EditorMessageUtility.GetWarningIcon(true);
                     break;
 
                 case MessageType.Error:
-                    _icon = ResCache.GetErrorIcon();
-                    _iconInactive = ResCache.GetErrorIcon(true);
+                    _icon = EditorMessageUtility.GetErrorIcon();
+                    _iconInactive = EditorMessageUtility.GetErrorIcon(true);
                     break;
 
                 default:

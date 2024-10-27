@@ -42,7 +42,7 @@ namespace GBG.EditorMessages.Editor
                     marginRight = 2,
                     overflow = Overflow.Hidden,
                     unityTextAlign = TextAnchor.MiddleRight,
-                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
+                    unityFontDefinition = new StyleFontDefinition(EditorMessageUtility.GetMonospaceFontAsset()),
                 }
             };
             Add(LineNumberLabel);
@@ -66,7 +66,7 @@ namespace GBG.EditorMessages.Editor
                 {
                     paddingRight = 0,
                     unityTextAlign = TextAnchor.MiddleCenter,
-                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
+                    unityFontDefinition = new StyleFontDefinition(EditorMessageUtility.GetMonospaceFontAsset()),
                 }
             };
             Add(TimestampLabel);
@@ -91,8 +91,9 @@ namespace GBG.EditorMessages.Editor
                     flexGrow = 1,
                     flexShrink = 1,
                     overflow = Overflow.Hidden,
+                    textOverflow = TextOverflow.Ellipsis,
                     unityTextAlign = TextAnchor.MiddleLeft,
-                    unityFontDefinition = new StyleFontDefinition(ResCache.GetMonospaceFontAsset()),
+                    unityFontDefinition = new StyleFontDefinition(EditorMessageUtility.GetMonospaceFontAsset()),
                 }
             };
             Add(ContentLabel);
@@ -136,7 +137,7 @@ namespace GBG.EditorMessages.Editor
             Message = message;
             LineNumber = lineNumber;
             LineNumberLabelWidth = lineNumberLabelWidth;
-            TypeImage.image = ResCache.GetMessageTypeIcon(message.Type);
+            TypeImage.image = EditorMessageUtility.GetMessageTypeIcon(message.Type);
             ContentLabel.text = message.Content;
 
             UpdateLineNumberLabel();
@@ -180,7 +181,7 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            ContextImage.image = ResCache.GetContextIcon();
+            ContextImage.image = EditorMessageUtility.GetContextIcon();
             ContextImage.style.display = DisplayStyle.Flex;
         }
 
@@ -192,7 +193,7 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            CustomDataImage.image = ResCache.GetCustomDataIcon();
+            CustomDataImage.image = EditorMessageUtility.GetCustomDataIcon();
             CustomDataImage.style.display = DisplayStyle.Flex;
         }
 

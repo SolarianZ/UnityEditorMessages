@@ -1,9 +1,9 @@
 {
   "name": "com.greenbamboogames.editormessages",
-  "version": "1.0.2",
+  "version": "1.0.0",
   "displayName": "Editor Messages!",
   "description": "Show custom messages in Unity Editor.",
-  "unity": "2021.3",
+  "unity": "2022.3",
   "documentationUrl": "https://github.com/SolarianZ/EditorMessages",
   "changelogUrl": "https://github.com/SolarianZ/EditorMessages/releases",
   "licensesUrl": "https://github.com/SolarianZ/EditorMessages/blob/main/LICENSE",

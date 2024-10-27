@@ -6,7 +6,7 @@ using UnityEngine.TextCore.Text;
 
 namespace GBG.EditorMessages.Editor
 {
-    public static class ResCache
+    public static class EditorMessageUtility
     {
         //private static Font _monospaceFont;
         private static FontAsset _monospaceFontAsset;
