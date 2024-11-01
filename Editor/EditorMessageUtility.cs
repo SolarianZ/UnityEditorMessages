@@ -44,7 +44,7 @@ namespace GBG.EditorMessages.Editor
                 return EditorGUIUtility.IconContent("console.infoicon.inactive.sml@2x").image;
             }
 
-            return EditorGUIUtility.IconContent("console.infoicon").image;
+            return EditorGUIUtility.IconContent("console.infoicon.sml").image;
         }
 
         public static Texture GetWarningIcon(bool inactive = false)
@@ -54,17 +54,17 @@ namespace GBG.EditorMessages.Editor
                 return EditorGUIUtility.IconContent("console.warnicon.inactive.sml@2x").image;
             }
 
-            return EditorGUIUtility.IconContent("console.warnicon").image;
+            return EditorGUIUtility.IconContent("console.warnicon.sml").image;
         }
 
         public static Texture GetErrorIcon(bool inactive = false)
         {
             if (inactive)
             {
-                return EditorGUIUtility.IconContent("console.erroricon.inactive.sml@2x").image;
+                return EditorGUIUtility.IconContent("console.erroricon.inactive.sml").image;
             }
 
-            return EditorGUIUtility.IconContent("console.erroricon").image;
+            return EditorGUIUtility.IconContent("console.erroricon.sml").image;
         }
 
         public static Texture GetContextIcon()

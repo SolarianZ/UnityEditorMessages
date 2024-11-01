@@ -64,6 +64,7 @@ namespace GBG.EditorMessages.Editor
         private ToolbarToggle _timestampToggle;
         private DropdownField _tagDropdown;
         private ToolbarSearchField _searchField;
+        private Image _regexErrorImage;
         private ToolbarToggle _regexToggle;
         private MessageTypeToggle _infoMessageToggle;
         private MessageTypeToggle _warningMessageToggle;
@@ -188,11 +189,27 @@ namespace GBG.EditorMessages.Editor
                 {
                     flexGrow = 1,
                     flexShrink = 1,
-                    marginRight = 4,
+                    marginRight = 2,
                 }
             };
             _searchField.RegisterValueChangedCallback(OnSearchPatternChanged);
             toolbar.Add(_searchField);
+
+            // Regex Error Image
+            _regexErrorImage = new Image
+            {
+                image = EditorMessageUtility.GetErrorIcon(),
+                style =
+                {
+                    alignSelf = Align.Center,
+                    display = DisplayStyle.None,
+                    minWidth = 16,
+                    maxWidth = 16,
+                    minHeight = 16,
+                    maxHeight = 16,
+                }
+            };
+            toolbar.Add(_regexErrorImage);
 
             // Regex Toggle
             _regexToggle = new ToolbarToggle
@@ -200,6 +217,10 @@ namespace GBG.EditorMessages.Editor
                 value = _useRegex,
                 text = ".*",
                 tooltip = "Use Regular Expression",
+                style =
+                {
+                    marginLeft = 2,
+                }
             };
             _regexToggle.RegisterValueChangedCallback(OnRegexToggleChanged);
             toolbar.Add(_regexToggle);
@@ -406,6 +427,8 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
+            _regexErrorImage.tooltip = null;
+            _regexErrorImage.style.display = DisplayStyle.None;
             for (int i = 0; i < Messages.Count; i++)
             {
                 Message message = Messages[i];
@@ -465,9 +488,10 @@ namespace GBG.EditorMessages.Editor
                 {
                     return Regex.IsMatch(message.Content, _searchPattern, RegexOptions.IgnoreCase);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    // ignored
+                    _regexErrorImage.tooltip = ex.Message;
+                    _regexErrorImage.style.display = DisplayStyle.Flex;
                     return false;
                 }
             }
