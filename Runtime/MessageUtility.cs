@@ -34,5 +34,22 @@ namespace GBG.EditorMessages
 
             return true;
         }
+
+        public static HashSet<string> CollectTags(this IEnumerable<Message> messages)
+        {
+            if (messages == null)
+            {
+                return null;
+            }
+
+            HashSet<string> tags = new HashSet<string>();
+            foreach (Message message in messages)
+            {
+                string tag = message.Tag ?? string.Empty;
+                tags.Add(tag);
+            }
+
+            return tags;
+        }
     }
 }

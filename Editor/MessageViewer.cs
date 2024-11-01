@@ -62,6 +62,7 @@ namespace GBG.EditorMessages.Editor
         private bool _createGuiEnd;
         private ToolbarToggle _lineNumberToggle;
         private ToolbarToggle _timestampToggle;
+        private DropdownField _tagDropdown;
         private ToolbarSearchField _searchField;
         private ToolbarToggle _regexToggle;
         private MessageTypeToggle _infoMessageToggle;
@@ -75,11 +76,14 @@ namespace GBG.EditorMessages.Editor
 
         private bool _sourceless;
         private int _messageCountCache;
+        private readonly List<string> _tagList = new List<string>() { TagAll };
         private readonly List<Message> _filteredMessageList = new List<Message>();
         private Action<Message> _customDataHandler;
 
 
         #region Serialized Fields
+
+        public const string TagAll = "All";
 
         [SerializeField]
         [HideInInspector]
@@ -89,7 +93,10 @@ namespace GBG.EditorMessages.Editor
         private bool _showTimestamp;
         [SerializeField]
         [HideInInspector]
-        private string _searchPattern;
+        private string _selectedTag = TagAll;
+        [SerializeField]
+        [HideInInspector]
+        private string _searchPattern = string.Empty;
         [SerializeField]
         [HideInInspector]
         private bool _useRegex;
@@ -132,8 +139,6 @@ namespace GBG.EditorMessages.Editor
             Toolbar toolbar = new Toolbar();
             rootVisualElement.Add(toolbar);
 
-            // TODO TAG
-
             // Line Number Toggle
             _lineNumberToggle = new ToolbarToggle
             {
@@ -152,7 +157,7 @@ namespace GBG.EditorMessages.Editor
             _timestampToggle = new ToolbarToggle
             {
                 value = _showTimestamp,
-                text = "T",
+                text = "Ts",
                 tooltip = "Show Timestamp",
                 style =
                 {
@@ -162,6 +167,18 @@ namespace GBG.EditorMessages.Editor
             _timestampToggle.RegisterValueChangedCallback(OnTimestampToggleChanged);
             toolbar.Add(_timestampToggle);
 
+            // Tag
+            _tagDropdown = new DropdownField(_tagList, _selectedTag)
+            {
+                tooltip = "Filter by Tag",
+                formatSelectedValueCallback = item => string.IsNullOrWhiteSpace(item) ? TagAll : item,
+                style =
+                {
+                    flexShrink = 0,
+                }
+            };
+            _tagDropdown.RegisterValueChangedCallback(OnSelectedTagChanged);
+            toolbar.Add(_tagDropdown);
 
             // Search Field
             _searchField = new ToolbarSearchField
@@ -309,7 +326,34 @@ namespace GBG.EditorMessages.Editor
         public void SetMessages(IList<Message> messages)
         {
             Messages = messages;
+            ClearFilters(false);
             Refresh();
+        }
+
+        public void ClearFilters(bool clearTypeFilter)
+        {
+            if (!_createGuiEnd)
+            {
+                _selectedTag = TagAll;
+                _searchPattern = string.Empty;
+                if (clearTypeFilter)
+                {
+                    _showInfoMessages = true;
+                    _showWarningMessages = true;
+                    _showErrorMessage = true;
+                }
+
+                return;
+            }
+
+            _tagDropdown.value = TagAll;
+            _searchField.value = string.Empty;
+            if (clearTypeFilter)
+            {
+                _infoMessageToggle.value = true;
+                _warningMessageToggle.value = true;
+                _errorMessageToggle.value = true;
+            }
         }
 
         public void SetCustomDataHandler(Action<Message> handler)
@@ -323,6 +367,24 @@ namespace GBG.EditorMessages.Editor
             {
                 return;
             }
+
+            _tagList.Clear();
+            HashSet<string> tagSet = Messages.CollectTags();
+            if (tagSet != null)
+            {
+                foreach (string tag in tagSet)
+                {
+                    if (string.IsNullOrWhiteSpace(tag) ||
+                        string.Equals(tag, TagAll, StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
+
+                    _tagList.Add(tag);
+                }
+                _tagList.Sort();
+            }
+            _tagList.Insert(0, TagAll);
 
             Messages.CountByType(out int infoCount, out int warningCount, out int errorCount);
             _messageCountCache = infoCount + warningCount + errorCount;
@@ -344,65 +406,73 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            bool noSearchPattern = string.IsNullOrEmpty(_searchPattern);
             for (int i = 0; i < Messages.Count; i++)
             {
                 Message message = Messages[i];
-                switch (message.Type)
-                {
-                    case MessageType.Info:
-                        if (!_infoMessageToggle.value)
-                        {
-                            continue;
-                        }
-
-                        break;
-                    case MessageType.Warning:
-                        if (!_warningMessageToggle.value)
-                        {
-                            continue;
-                        }
-
-                        break;
-                    case MessageType.Error:
-                        if (!_errorMessageToggle.value)
-                        {
-                            continue;
-                        }
-
-                        break;
-                    default: throw new ArgumentOutOfRangeException(nameof(message.Type), message.Type, null);
-                }
-
-                if (noSearchPattern)
-                {
-                    _filteredMessageList.Add(message);
-                }
-                else if (string.IsNullOrEmpty(message.Context))
+                if (!TestMessageType(message) || !TestMessageTag(message) || !TestMessageSearchPattern(message))
                 {
                     continue;
                 }
-                else if (_useRegex)
-                {
-                    try
-                    {
-                        if (Regex.IsMatch(message.Content, _searchPattern, RegexOptions.IgnoreCase))
-                        {
-                            _filteredMessageList.Add(message);
-                        }
-                    }
-                    catch
-                    {
-                        // ignored
-                    }
-                }
-                else if (message.Content.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase))
-                {
-                    _filteredMessageList.Add(message);
-                }
+
+                _filteredMessageList.Add(message);
             }
 
             RebuildMessageListView();
+        }
+
+        private bool TestMessageType(Message message)
+        {
+            switch (message.Type)
+            {
+                case MessageType.Info:
+                    return _showInfoMessages;
+
+                case MessageType.Warning:
+                    return _showWarningMessages;
+
+                case MessageType.Error:
+                    return _showErrorMessage;
+
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(message.Type), message.Type, null);
+            }
+
+        }
+
+        private bool TestMessageTag(Message message)
+        {
+            return string.IsNullOrWhiteSpace(_selectedTag) ||
+                string.Equals(_selectedTag, TagAll, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(_selectedTag, message.Tag, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool TestMessageSearchPattern(Message message)
+        {
+            bool noSearchPattern = string.IsNullOrEmpty(_searchPattern);
+            if (noSearchPattern)
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(message.Content))
+            {
+                return false;
+            }
+
+            if (_useRegex)
+            {
+                try
+                {
+                    return Regex.IsMatch(message.Content, _searchPattern, RegexOptions.IgnoreCase);
+                }
+                catch
+                {
+                    // ignored
+                    return false;
+                }
+            }
+
+            return message.Content.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase);
         }
 
         private void TryClose()
@@ -513,6 +583,17 @@ namespace GBG.EditorMessages.Editor
         {
             _showTimestamp = _timestampToggle.value;
             RebuildMessageListView();
+        }
+
+        private void OnSelectedTagChanged(ChangeEvent<string> evt)
+        {
+            _selectedTag = _tagDropdown.value;
+            if (string.IsNullOrWhiteSpace(_selectedTag))
+            {
+                _selectedTag = TagAll;
+            }
+
+            FilterMessages();
         }
 
         private void OnSearchPatternChanged(ChangeEvent<string> evt)
