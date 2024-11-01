@@ -1,6 +1,6 @@
 {
   "name": "com.greenbamboogames.editormessages",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Editor Messages!",
   "description": "Show custom messages in Unity Editor.",
   "unity": "2022.3",
