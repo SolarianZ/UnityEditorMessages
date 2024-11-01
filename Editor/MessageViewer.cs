@@ -179,6 +179,7 @@ namespace GBG.EditorMessages.Editor
                 }
             };
             _tagDropdown.RegisterValueChangedCallback(OnSelectedTagChanged);
+            _tagDropdown.Q(className: DropdownField.inputUssClassName).style.minWidth = StyleKeyword.Auto;
             toolbar.Add(_tagDropdown);
 
             // Search Field
