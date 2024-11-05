@@ -34,29 +34,29 @@ namespace GBG.EditorMessages
         }
 
 
-        public MessageType Type;
-        public long Timestamp;
-        public string Content; // -> Message
-        public string Tag;
-        public string Context;
-        public string CustomData;
+        public MessageType type;
+        public long timestamp;
+        public string content;
+        public string tag;
+        public string context;
+        public string customData;
 
 
         public Message(MessageType type, long timestamp, string content, string tag, object context, string customData = null)
         {
-            Type = type;
-            Timestamp = timestamp;
-            Content = content;
-            Tag = tag;
-            CustomData = customData;
+            this.type = type;
+            this.timestamp = timestamp;
+            this.content = content;
+            this.tag = tag;
+            this.customData = customData;
             InitializeContextFromObject(context);
         }
 
         public override string ToString()
         {
-            string text = $"{new DateTime(Timestamp)} {Type} [{Tag}] | {Content}";
+            string text = $"{new DateTime(timestamp)} {type} [{tag}] | {content}";
 
-            if (!string.IsNullOrEmpty(Context))
+            if (!string.IsNullOrEmpty(context))
             {
                 UObject unityContextObject = GetUnityContextObject();
                 if (unityContextObject)
@@ -65,13 +65,13 @@ namespace GBG.EditorMessages
                 }
                 else
                 {
-                    text = $"{text} | {Context}";
+                    text = $"{text} | {context}";
                 }
             }
 
-            if (!string.IsNullOrEmpty(CustomData))
+            if (!string.IsNullOrEmpty(customData))
             {
-                text = $"{text} | {CustomData}";
+                text = $"{text} | {customData}";
             }
 
             return text;
@@ -98,12 +98,12 @@ namespace GBG.EditorMessages
             if (_contextObjectCache)
             {
                 GlobalObjectId globalObjId = GlobalObjectId.GetGlobalObjectIdSlow(_contextObjectCache);
-                Context = globalObjId.ToString();
+                this.context = globalObjId.ToString();
                 return;
             }
 #endif
 
-            Context = context.ToString();
+            this.context = context.ToString();
         }
 
         public UObject GetUnityContextObject()
@@ -119,7 +119,7 @@ namespace GBG.EditorMessages
                 return null;
             }
 
-            if (!string.IsNullOrWhiteSpace(Context) && GlobalObjectId.TryParse(Context, out GlobalObjectId globalObjectId))
+            if (!string.IsNullOrWhiteSpace(context) && GlobalObjectId.TryParse(context, out GlobalObjectId globalObjectId))
             {
                 _contextObjectCache = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalObjectId);
                 //_contextIsNotUnityObject = !_contextObjectCache; // 若目标是Scene中的对象且Scene未打开，也会返回null，但这时不能认定目标不是UnityObject
@@ -140,7 +140,7 @@ namespace GBG.EditorMessages
                 return unityObject.ToString();
             }
 
-            return Context;
+            return context;
         }
 
         #endregion

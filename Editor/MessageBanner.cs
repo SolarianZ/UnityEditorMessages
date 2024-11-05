@@ -190,9 +190,9 @@ namespace GBG.EditorMessages.Editor
 
         private void SetMessage(Message message)
         {
-            TypeImage.image = message != null ? EditorMessageUtility.GetMessageTypeIcon(message.Type) : null;
-            ContentLabel.text = message?.Content;
-            ContentLabel.tooltip = message?.Content;
+            TypeImage.image = message != null ? EditorMessageUtility.GetMessageTypeIcon(message.type) : null;
+            ContentLabel.text = message?.content;
+            ContentLabel.tooltip = message?.content;
         }
 
         private void SetMessageCount(MessageType messageType, int count)

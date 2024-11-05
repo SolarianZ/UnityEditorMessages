@@ -436,7 +436,7 @@ namespace GBG.EditorMessages.Editor
 
         private bool TestMessageType(Message message)
         {
-            switch (message.Type)
+            switch (message.type)
             {
                 case MessageType.Info:
                     return _showInfoMessages;
@@ -448,7 +448,7 @@ namespace GBG.EditorMessages.Editor
                     return _showErrorMessage;
 
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(message.Type), message.Type, null);
+                    throw new ArgumentOutOfRangeException(nameof(message.type), message.type, null);
             }
 
         }
@@ -457,7 +457,7 @@ namespace GBG.EditorMessages.Editor
         {
             return string.IsNullOrWhiteSpace(_selectedTag) ||
                 string.Equals(_selectedTag, TagAll, StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(_selectedTag, message.Tag, StringComparison.OrdinalIgnoreCase);
+                string.Equals(_selectedTag, message.tag, StringComparison.OrdinalIgnoreCase);
         }
 
         private bool TestMessageSearchPattern(Message message)
@@ -468,7 +468,7 @@ namespace GBG.EditorMessages.Editor
                 return true;
             }
 
-            if (string.IsNullOrEmpty(message.Content))
+            if (string.IsNullOrEmpty(message.content))
             {
                 return false;
             }
@@ -477,7 +477,7 @@ namespace GBG.EditorMessages.Editor
             {
                 try
                 {
-                    return Regex.IsMatch(message.Content, _searchPattern, RegexOptions.IgnoreCase);
+                    return Regex.IsMatch(message.content, _searchPattern, RegexOptions.IgnoreCase);
                 }
                 catch (Exception ex)
                 {
@@ -487,7 +487,7 @@ namespace GBG.EditorMessages.Editor
                 }
             }
 
-            return message.Content.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase);
+            return message.content.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase);
         }
 
         private void TryClose()

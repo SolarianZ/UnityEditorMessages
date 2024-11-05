@@ -1,4 +1,6 @@
-﻿using UnityEngine.UIElements;
+﻿using System;
+using UnityEditor.VersionControl;
+using UnityEngine.UIElements;
 
 namespace GBG.EditorMessages.Editor
 {
@@ -8,7 +10,8 @@ namespace GBG.EditorMessages.Editor
         private readonly MessageDetailsTabElement _messageTab;
         private readonly MessageDetailsTabElement _contextTab;
         private readonly MessageDetailsTabElement _customDataTab;
-        private readonly Label _detailsLabel;
+        private readonly Label _contentLabel;
+        private Message _message;
 
 
         public MessageDetailsElement()
@@ -69,7 +72,7 @@ namespace GBG.EditorMessages.Editor
             detailsContainer.Add(detailsScrollView);
 
             // Message Details Label
-            _detailsLabel = new Label
+            _contentLabel = new Label
             {
                 enableRichText = true,
                 selection = { isSelectable = true, },
@@ -79,19 +82,44 @@ namespace GBG.EditorMessages.Editor
                     whiteSpace = WhiteSpace.Normal,
                 }
             };
-            detailsScrollView.Add(_detailsLabel);
+            detailsScrollView.Add(_contentLabel);
 
             #endregion
         }
 
         public void SetMessage(Message message)
         {
-            _detailsLabel.text = message?.Content;
+            _message = message;
+
+            MessageType messageType = message?.type ?? MessageType.Info;
+            switch (messageType)
+            {
+                case MessageType.Info:
+                    _messageTab.Icon.image = EditorMessageUtility.GetInfoIcon();
+                    break;
+                case MessageType.Warning:
+                    _messageTab.Icon.image = EditorMessageUtility.GetWarningIcon();
+                    break;
+                case MessageType.Error:
+                    _messageTab.Icon.image = EditorMessageUtility.GetErrorIcon();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(messageType), messageType, null);
+            }
+
+            _contextTab.style.display = string.IsNullOrEmpty(message?.context)
+                ? DisplayStyle.None : DisplayStyle.Flex;
+            _customDataTab.style.display = string.IsNullOrEmpty(message?.customData)
+                ? DisplayStyle.None : DisplayStyle.Flex;
+
+            OnClickMessageTab();
         }
 
 
         private void OnClickMessageTab()
         {
+            _contentLabel.text = _message?.content;
+
             _messageTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
             _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
             _customDataTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
@@ -99,6 +127,8 @@ namespace GBG.EditorMessages.Editor
 
         private void OnClickContextTab()
         {
+            _contentLabel.text = _message?.context;
+
             _messageTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
             _contextTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
             _customDataTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
@@ -106,6 +136,8 @@ namespace GBG.EditorMessages.Editor
 
         private void OnClickCustomDataTab()
         {
+            _contentLabel.text = _message?.customData;
+
             _messageTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
             _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
             _customDataTab.style.backgroundColor = EditorMessageUtility.ActiveColor;

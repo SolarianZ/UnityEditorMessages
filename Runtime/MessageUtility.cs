@@ -16,7 +16,7 @@ namespace GBG.EditorMessages
 
             foreach (Message message in messages)
             {
-                switch (message.Type)
+                switch (message.type)
                 {
                     case MessageType.Info:
                         infoCount++;
@@ -28,7 +28,7 @@ namespace GBG.EditorMessages
                         errorCount++;
                         break;
                     default:
-                        throw new ArgumentOutOfRangeException(nameof(message.Type), message.Type, null);
+                        throw new ArgumentOutOfRangeException(nameof(message.type), message.type, null);
                 }
             }
 
@@ -45,7 +45,7 @@ namespace GBG.EditorMessages
             HashSet<string> tags = new HashSet<string>();
             foreach (Message message in messages)
             {
-                string tag = message.Tag ?? string.Empty;
+                string tag = message.tag ?? string.Empty;
                 tags.Add(tag);
             }
 

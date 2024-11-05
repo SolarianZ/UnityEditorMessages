@@ -138,8 +138,8 @@ namespace GBG.EditorMessages.Editor
             Message = message;
             LineNumber = lineNumber;
             LineNumberLabelWidth = lineNumberLabelWidth;
-            TypeImage.image = EditorMessageUtility.GetMessageTypeIcon(message.Type);
-            ContentLabel.text = message.Content;
+            TypeImage.image = EditorMessageUtility.GetMessageTypeIcon(message.type);
+            ContentLabel.text = message.content;
 
             UpdateLineNumberLabel();
             UpdateTimestampLabel();
@@ -169,14 +169,14 @@ namespace GBG.EditorMessages.Editor
                 return;
             }
 
-            TimestampLabel.text = new DateTime(Message.Timestamp).ToString(CultureInfo.CurrentCulture);
+            TimestampLabel.text = new DateTime(Message.timestamp).ToString(CultureInfo.CurrentCulture);
             TimestampLabel.style.display = DisplayStyle.Flex;
             TimestampSeparatorLabel.style.display = DisplayStyle.Flex;
         }
 
         private void UpdateContextImage()
         {
-            if (string.IsNullOrEmpty(Message.Context))
+            if (string.IsNullOrEmpty(Message.context))
             {
                 ContextImage.style.display = DisplayStyle.None;
                 return;
@@ -188,7 +188,7 @@ namespace GBG.EditorMessages.Editor
 
         private void UpdateCustomDataImage()
         {
-            if (string.IsNullOrEmpty(Message.CustomData))
+            if (string.IsNullOrEmpty(Message.customData))
             {
                 CustomDataImage.style.display = DisplayStyle.None;
                 return;
@@ -208,7 +208,7 @@ namespace GBG.EditorMessages.Editor
                     EditorGUIUtility.PingObject(context);
                 }
             }
-            else if (evt.clickCount == 2 && !string.IsNullOrEmpty(Message?.CustomData))
+            else if (evt.clickCount == 2 && !string.IsNullOrEmpty(Message?.customData))
             {
                 if (WantsToProcessCustomData != null)
                 {
@@ -226,18 +226,18 @@ namespace GBG.EditorMessages.Editor
             GenericMenu menu = new GenericMenu();
 
             // Copy Content
-            menu.AddItem(new GUIContent("Copy Content"), false, () => EditorGUIUtility.systemCopyBuffer = Message.Content);
+            menu.AddItem(new GUIContent("Copy Content"), false, () => EditorGUIUtility.systemCopyBuffer = Message.content);
 
             // Copy Context
-            if (!string.IsNullOrEmpty(Message.Context))
+            if (!string.IsNullOrEmpty(Message.context))
             {
-                menu.AddItem(new GUIContent("Copy Context"), false, () => EditorGUIUtility.systemCopyBuffer = Message.Context);
+                menu.AddItem(new GUIContent("Copy Context"), false, () => EditorGUIUtility.systemCopyBuffer = Message.context);
             }
 
             // Copy Custom Data
-            if (!string.IsNullOrEmpty(Message.CustomData))
+            if (!string.IsNullOrEmpty(Message.customData))
             {
-                menu.AddItem(new GUIContent("Copy Custom Data"), false, () => EditorGUIUtility.systemCopyBuffer = Message.CustomData);
+                menu.AddItem(new GUIContent("Copy Custom Data"), false, () => EditorGUIUtility.systemCopyBuffer = Message.customData);
             }
 
             menu.ShowAsContext();
