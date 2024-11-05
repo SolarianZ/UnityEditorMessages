@@ -16,17 +16,20 @@ namespace GBG.EditorMessages.Editor
             float iconSize = EditorMessageUtility.GlobalIconSize;
 
             style.flexDirection = FlexDirection.Row;
+            style.flexGrow = 1;
             style.minHeight = iconSize * 3 + 2;
 
 
             #region Details Type Toggle
+            Color inactiveColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 0.15f) : new Color(1f, 1f, 1f, 0.26f);
 
             // Type Toggle Container
             _typeToggleContainer = new VisualElement
             {
                 style =
                 {
-                    width = iconSize + 2,
+                    backgroundColor = inactiveColor,
+                    width = iconSize
                     //paddingLeft = 1,
                     //paddingRight = 1,
                     //paddingTop = 1,
@@ -35,54 +38,32 @@ namespace GBG.EditorMessages.Editor
             };
             Add(_typeToggleContainer);
 
-            Color inactiveColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 0.15f) : new Color(1f, 1f, 1f, 0.26f);
-
-            // Message Toggle
-            _messageToggle = new Image
+            MessageDetailsTabElement toggle1 = new MessageDetailsTabElement
             {
-                image = EditorMessageUtility.GetInfoIcon(),
                 style =
                 {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
+                    height = iconSize,
                 }
             };
-            _typeToggleContainer.Add(_messageToggle);
+            _typeToggleContainer.Add(toggle1);
 
-            // Context Toggle
-            Image contextToggle = new Image
+            MessageDetailsTabElement toggle2 = new MessageDetailsTabElement
             {
-                image = EditorMessageUtility.GetContextIcon(),
                 style =
                 {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                    backgroundColor = inactiveColor,
+                    height = iconSize,
                 }
             };
-            _typeToggleContainer.Add(contextToggle);
+            _typeToggleContainer.Add(toggle2);
 
-            // Custom Data Toggle
-            Image customDataToggle = new Image
+            MessageDetailsTabElement toggle3 = new MessageDetailsTabElement
             {
-                image = EditorMessageUtility.GetCustomDataIcon(),
                 style =
                 {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                    backgroundColor = inactiveColor,
+                    height = iconSize,
                 }
             };
-            _typeToggleContainer.Add(customDataToggle);
+            _typeToggleContainer.Add(toggle3);
 
             #endregion
 
@@ -90,7 +71,13 @@ namespace GBG.EditorMessages.Editor
             #region Details Content
 
             // Details Container
-            VisualElement detailsContainer = new VisualElement();
+            VisualElement detailsContainer = new VisualElement
+            {
+                style =
+                {
+                    flexGrow = 1,
+                }
+            };
             Add(detailsContainer);
 
             // Message Details Scroll
@@ -98,7 +85,7 @@ namespace GBG.EditorMessages.Editor
             {
                 style =
                 {
-                    flexGrow = 1,
+                    //flexGrow = 1,
                 }
             };
             detailsContainer.Add(detailsScrollView);

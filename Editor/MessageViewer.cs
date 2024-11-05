@@ -310,9 +310,9 @@ namespace GBG.EditorMessages.Editor
 
             #endregion
 
+
             _messageDetailsElement = new MessageDetailsElement();
             messageDetailsContainer.Add(_messageDetailsElement);
-
 
             _createGuiEnd = true;
             Refresh();
