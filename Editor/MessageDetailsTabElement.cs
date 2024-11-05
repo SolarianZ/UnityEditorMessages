@@ -1,4 +1,4 @@
-﻿using UnityEditor;
+﻿using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -8,27 +8,29 @@ namespace GBG.EditorMessages.Editor
     {
         public Image Icon { get; }
 
-        public MessageDetailsTabElement()
+
+        public MessageDetailsTabElement(Texture texture, string tooltip, Action onClick)
         {
             float iconSize = EditorMessageUtility.GlobalIconSize;
-            //Color inactiveColor = EditorGUIUtility.isProSkin
-            //    ? new Color(1f, 1f, 1f, 0.15f)
-            //    : new Color(1f, 1f, 1f, 0.26f);
+            style.height = iconSize;
+            this.tooltip = tooltip;
 
             Icon = new Image
             {
-                image = EditorMessageUtility.GetInfoIcon(), // todo : test
+                image = texture,
                 style =
                 {
                     alignSelf = Align.Center,
-                    //minWidth = iconSize,
-                    //maxWidth = iconSize,
+                    minWidth = iconSize,
+                    maxWidth = iconSize,
                     minHeight = iconSize,
                     maxHeight = iconSize,
                     //backgroundColor = inactiveColor,
                 }
             };
             Add(Icon);
+
+            RegisterCallback<ClickEvent>(evt => onClick?.Invoke());
         }
     }
 }

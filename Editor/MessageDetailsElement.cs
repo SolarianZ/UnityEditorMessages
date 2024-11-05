@@ -1,13 +1,13 @@
-﻿using UnityEditor;
-using UnityEngine;
-using UnityEngine.UIElements;
+﻿using UnityEngine.UIElements;
 
 namespace GBG.EditorMessages.Editor
 {
     public class MessageDetailsElement : VisualElement
     {
         private readonly VisualElement _typeToggleContainer;
-        private readonly Image _messageToggle;
+        private readonly MessageDetailsTabElement _messageTab;
+        private readonly MessageDetailsTabElement _contextTab;
+        private readonly MessageDetailsTabElement _customDataTab;
         private readonly Label _detailsLabel;
 
 
@@ -22,14 +22,12 @@ namespace GBG.EditorMessages.Editor
 
             #region Details Type Toggle
 
-            Color inactiveColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 0.15f) : new Color(1f, 1f, 1f, 0.26f);
-
             // Type Toggle Container
             _typeToggleContainer = new VisualElement
             {
                 style =
                 {
-                    backgroundColor = inactiveColor,
+                    backgroundColor = EditorMessageUtility.InactiveColor,
                     width = iconSize + 2,
                     paddingLeft = 1,
                     //paddingRight = 1,
@@ -39,33 +37,17 @@ namespace GBG.EditorMessages.Editor
             };
             Add(_typeToggleContainer);
 
-            MessageDetailsTabElement toggle1 = new MessageDetailsTabElement
-            {
-                style =
-                {
-                    height = iconSize,
-                }
-            };
-            _typeToggleContainer.Add(toggle1);
+            _messageTab = new MessageDetailsTabElement(EditorMessageUtility.GetInfoIcon(),
+                "Message", OnClickMessageTab);
+            _typeToggleContainer.Add(_messageTab);
 
-            MessageDetailsTabElement toggle2 = new MessageDetailsTabElement
-            {
-                style =
-                {
-                    height = iconSize,
-                    backgroundColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f, 1f) : new Color(0.76f, 0.76f, 0.76f, 1f),
-                }
-            };
-            _typeToggleContainer.Add(toggle2);
+            _contextTab = new MessageDetailsTabElement(EditorMessageUtility.GetContextIcon(),
+                "Context", OnClickContextTab);
+            _typeToggleContainer.Add(_contextTab);
 
-            MessageDetailsTabElement toggle3 = new MessageDetailsTabElement
-            {
-                style =
-                {
-                    height = iconSize,
-                }
-            };
-            _typeToggleContainer.Add(toggle3);
+            _customDataTab = new MessageDetailsTabElement(EditorMessageUtility.GetCustomDataIcon(),
+                "Custom Data", OnClickCustomDataTab);
+            _typeToggleContainer.Add(_customDataTab);
 
             #endregion
 
@@ -83,13 +65,7 @@ namespace GBG.EditorMessages.Editor
             Add(detailsContainer);
 
             // Message Details Scroll
-            ScrollView detailsScrollView = new ScrollView(ScrollViewMode.Vertical)
-            {
-                style =
-                {
-                    //flexGrow = 1,
-                }
-            };
+            ScrollView detailsScrollView = new ScrollView(ScrollViewMode.Vertical);
             detailsContainer.Add(detailsScrollView);
 
             // Message Details Label
@@ -111,6 +87,28 @@ namespace GBG.EditorMessages.Editor
         public void SetMessage(Message message)
         {
             _detailsLabel.text = message?.Content;
+        }
+
+
+        private void OnClickMessageTab()
+        {
+            _messageTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
+            _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+            _customDataTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+        }
+
+        private void OnClickContextTab()
+        {
+            _messageTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+            _contextTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
+            _customDataTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+        }
+
+        private void OnClickCustomDataTab()
+        {
+            _messageTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+            _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+            _customDataTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
         }
     }
 }

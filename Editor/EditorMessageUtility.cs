@@ -9,12 +9,18 @@ namespace GBG.EditorMessages.Editor
     public static class EditorMessageUtility
     {
         #region Style
-        
-        public static int GlobalIconSize = 16; 
 
-        // alpha : 50
+        public static int GlobalIconSize = 16;
+
+        public static Color ActiveColor => EditorGUIUtility.isProSkin
+                ? new Color(0.22f, 0.22f, 0.22f, 1f)
+                : new Color(0.76f, 0.76f, 0.76f, 1f);
+        public static Color InactiveColor => EditorGUIUtility.isProSkin
+                ? new Color(1f, 1f, 1f, 0.15f)
+                : new Color(1f, 1f, 1f, 0.26f);
 
         #endregion
+
 
         //private static Font _monospaceFont;
         private static FontAsset _monospaceFontAsset;
