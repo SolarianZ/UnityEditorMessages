@@ -15,15 +15,18 @@ namespace GBG.EditorMessages.Editor
         public MessageTypeToggle(bool value)
         {
             base.value = value;
+
+            float iconSize = EditorMessageUtility.GlobalIconSize;
+
             _typeImage = new Image
             {
                 style =
                 {
                     alignSelf = Align.Center,
-                    minWidth = 16,
-                    maxWidth = 16,
-                    minHeight = 16,
-                    maxHeight = 16,
+                    minWidth = iconSize,
+                    maxWidth = iconSize,
+                    minHeight = iconSize,
+                    maxHeight = iconSize,
                 }
             };
             Insert(0, _typeImage);

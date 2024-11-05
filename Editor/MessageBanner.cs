@@ -61,7 +61,7 @@ namespace GBG.EditorMessages.Editor
             style.height = 20;
 
 
-            float iconSize = 16;
+            float iconSize = EditorMessageUtility.GlobalIconSize;
 
             TypeImage = new Image
             {

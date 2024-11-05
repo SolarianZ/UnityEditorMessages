@@ -15,11 +15,11 @@ namespace GBG.EditorMessages.Editor
         private static Dictionary<object, MessageViewer> _sourcedInstanceDict;
 
         /// <summary>
-        /// ´ò¿ªÏûÏ¢²é¿´Æ÷´°¿Ú¡£
+        /// ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½é¿´ï¿½ï¿½ï¿½ï¿½ï¿½Ú¡ï¿½
         /// </summary>
-        /// <param name="messages">ÏûÏ¢ÁÐ±í¡£</param>
-        /// <param name="source">µ÷ÓÃÔ´¡£µ±µ÷ÓÃÔ´±äÎªnullÊ±£¬ÏûÏ¢²é¿´Æ÷´°¿Ú»á×Ô¶¯¹Ø±Õ¡£Èô´«Èënull£¬ÔòÏûÏ¢²é¿´Æ÷´°¿Ú²»»á×Ô¶¯¹Ø±Õ¡£</param>
-        /// <param name="sourceName">µ÷ÓÃÔ´µÄÃû×Ö¡£»á³öÏÖÔÚÏûÏ¢²é¿´Æ÷´°¿Ú±êÌâÖÐ¡£</param>
+        /// <param name="messages">ï¿½ï¿½Ï¢ï¿½Ð±ï¿½ï¿½ï¿½</param>
+        /// <param name="source">ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ÎªnullÊ±ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½é¿´ï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½ï¿½Ô¶ï¿½ï¿½Ø±Õ¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½nullï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½é¿´ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½Ø±Õ¡ï¿½</param>
+        /// <param name="sourceName">ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢ï¿½é¿´ï¿½ï¿½ï¿½ï¿½ï¿½Ú±ï¿½ï¿½ï¿½ï¿½Ð¡ï¿½</param>
         /// <returns></returns>
         public static MessageViewer Open(IList<Message> messages, object source, string sourceName)
         {
@@ -70,7 +70,7 @@ namespace GBG.EditorMessages.Editor
         private MessageTypeToggle _warningMessageToggle;
         private MessageTypeToggle _errorMessageToggle;
         private ListView _messageListView;
-        private Label _messageDetailsLabel;
+        private MessageDetailsElement _messageDetailsElement;
 
         public object Source { get; private set; }
         public IList<Message> Messages { get; private set; }
@@ -136,6 +136,11 @@ namespace GBG.EditorMessages.Editor
 
         private void CreateGUI()
         {
+            float iconSize = EditorMessageUtility.GlobalIconSize;
+
+
+            #region Toolbar
+
             // Toolbar
             Toolbar toolbar = new Toolbar();
             rootVisualElement.Add(toolbar);
@@ -204,10 +209,10 @@ namespace GBG.EditorMessages.Editor
                 {
                     alignSelf = Align.Center,
                     display = DisplayStyle.None,
-                    minWidth = 16,
-                    maxWidth = 16,
-                    minHeight = 16,
-                    maxHeight = 16,
+                    minWidth = iconSize,
+                    maxWidth = iconSize,
+                    minHeight = iconSize,
+                    maxHeight = iconSize,
                 }
             };
             toolbar.Add(_regexErrorImage);
@@ -255,9 +260,11 @@ namespace GBG.EditorMessages.Editor
             _errorMessageToggle.RegisterValueChangedCallback(OnMessageTypeToggleChanged);
             typeToggleContainer.Add(_errorMessageToggle);
 
+            #endregion
+
 
             // Vertical Split View
-            TwoPaneSplitView splitView = new TwoPaneSplitView(0, 200, TwoPaneSplitViewOrientation.Vertical);
+            TwoPaneSplitView splitView = new TwoPaneSplitView(1, 50, TwoPaneSplitViewOrientation.Vertical);
             rootVisualElement.Add(splitView);
 
             // Message List Container
@@ -277,10 +284,14 @@ namespace GBG.EditorMessages.Editor
                 name = "message-details-container",
                 style =
                 {
+                    flexDirection = FlexDirection.Row,
                     minHeight = 50,
                 }
             };
             splitView.Add(messageDetailsContainer);
+
+
+            #region Message List
 
             // Message List View
             _messageListView = new ListView(_filteredMessageList)
@@ -297,28 +308,11 @@ namespace GBG.EditorMessages.Editor
             _messageListView.selectionChanged += OnSelectedMessageChanged;
             messageListContainer.Add(_messageListView);
 
-            // Message Details Scroll
-            ScrollView messageDetailsScrollView = new ScrollView(ScrollViewMode.Vertical)
-            {
-                style =
-                {
-                    flexGrow = 1,
-                }
-            };
-            messageDetailsContainer.Add(messageDetailsScrollView);
+            #endregion
 
-            // Message Details Label
-            _messageDetailsLabel = new Label
-            {
-                enableRichText = true,
-                selection = { isSelectable = true, },
-                style =
-                {
-                    flexGrow = 1,
-                    whiteSpace = WhiteSpace.Normal,
-                }
-            };
-            messageDetailsScrollView.Add(_messageDetailsLabel);
+            _messageDetailsElement = new MessageDetailsElement();
+            messageDetailsContainer.Add(_messageDetailsElement);
+
 
             _createGuiEnd = true;
             Refresh();
@@ -574,7 +568,7 @@ namespace GBG.EditorMessages.Editor
         private void OnSelectedMessageChanged(IEnumerable<object> _)
         {
             Message selectedMessage = _messageListView.selectedItem as Message;
-            _messageDetailsLabel.text = selectedMessage?.Content;
+            _messageDetailsElement.SetMessage(selectedMessage);
         }
 
         private void OnWantsToProcessCustomData(Message message)

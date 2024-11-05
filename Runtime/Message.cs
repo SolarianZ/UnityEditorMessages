@@ -36,7 +36,7 @@ namespace GBG.EditorMessages
 
         public MessageType Type;
         public long Timestamp;
-        public string Content;
+        public string Content; // -> Message
         public string Tag;
         public string Context;
         public string CustomData;

@@ -8,6 +8,14 @@ namespace GBG.EditorMessages.Editor
 {
     public static class EditorMessageUtility
     {
+        #region Style
+        
+        public static int GlobalIconSize = 16; 
+
+        // alpha : 50
+
+        #endregion
+
         //private static Font _monospaceFont;
         private static FontAsset _monospaceFontAsset;
 
@@ -74,7 +82,7 @@ namespace GBG.EditorMessages.Editor
 
         public static Texture GetCustomDataIcon()
         {
-            return EditorGUIUtility.IconContent("customized").image;
+            return EditorGUIUtility.IconContent("animation.play").image;
         }
 
 

@@ -33,6 +33,7 @@ namespace GBG.EditorMessages.Editor
             style.paddingRight = 4;
             style.minWidth = 100;
 
+            float iconSize = EditorMessageUtility.GlobalIconSize;
 
             LineNumberLabel = new Label
             {
@@ -52,10 +53,10 @@ namespace GBG.EditorMessages.Editor
                 style =
                 {
                     alignSelf = Align.Center,
-                    minWidth = 16,
-                    maxWidth = 16,
-                    minHeight = 16,
-                    maxHeight = 16,
+                    minWidth = iconSize,
+                    maxWidth = iconSize,
+                    minHeight = iconSize,
+                    maxHeight = iconSize,
                 }
             };
             Add(TypeImage);
@@ -104,10 +105,10 @@ namespace GBG.EditorMessages.Editor
                 style =
                 {
                     alignSelf = Align.Center,
-                    minWidth = 16,
-                    maxWidth = 16,
-                    minHeight = 16,
-                    maxHeight = 16,
+                    minWidth = iconSize,
+                    maxWidth = iconSize,
+                    minHeight = iconSize,
+                    maxHeight = iconSize,
                 }
             };
             Add(ContextImage);
@@ -118,10 +119,10 @@ namespace GBG.EditorMessages.Editor
                 style =
                 {
                     alignSelf = Align.Center,
-                    minWidth = 16,
-                    maxWidth = 16,
-                    minHeight = 16,
-                    maxHeight = 16,
+                    minWidth = iconSize,
+                    maxWidth = iconSize,
+                    minHeight = iconSize,
+                    maxHeight = iconSize,
                 }
             };
             Add(CustomDataImage);
