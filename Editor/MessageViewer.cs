@@ -291,8 +291,6 @@ namespace GBG.EditorMessages.Editor
             splitView.Add(messageDetailsContainer);
 
 
-            #region Message List
-
             // Message List View
             _messageListView = new ListView(_filteredMessageList)
             {
@@ -308,9 +306,7 @@ namespace GBG.EditorMessages.Editor
             _messageListView.selectionChanged += OnSelectedMessageChanged;
             messageListContainer.Add(_messageListView);
 
-            #endregion
-
-
+            // Message Details View
             _messageDetailsElement = new MessageDetailsElement();
             messageDetailsContainer.Add(_messageDetailsElement);
 

@@ -21,6 +21,7 @@ namespace GBG.EditorMessages.Editor
 
 
             #region Details Type Toggle
+
             Color inactiveColor = EditorGUIUtility.isProSkin ? new Color(1f, 1f, 1f, 0.15f) : new Color(1f, 1f, 1f, 0.26f);
 
             // Type Toggle Container
@@ -29,11 +30,11 @@ namespace GBG.EditorMessages.Editor
                 style =
                 {
                     backgroundColor = inactiveColor,
-                    width = iconSize
-                    //paddingLeft = 1,
+                    width = iconSize + 2,
+                    paddingLeft = 1,
                     //paddingRight = 1,
-                    //paddingTop = 1,
-                    //paddingBottom = 1,
+                    paddingTop = 1,
+                    paddingBottom = 1,
                 }
             };
             Add(_typeToggleContainer);
@@ -52,6 +53,7 @@ namespace GBG.EditorMessages.Editor
                 style =
                 {
                     height = iconSize,
+                    backgroundColor = EditorGUIUtility.isProSkin ? new Color(0.22f, 0.22f, 0.22f, 1f) : new Color(0.76f, 0.76f, 0.76f, 1f),
                 }
             };
             _typeToggleContainer.Add(toggle2);
