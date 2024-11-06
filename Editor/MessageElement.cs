@@ -4,7 +4,6 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
-using UObject = UnityEngine.Object;
 
 namespace GBG.EditorMessages.Editor
 {
@@ -202,11 +201,7 @@ namespace GBG.EditorMessages.Editor
         {
             if (evt.clickCount == 1)
             {
-                UObject context = Message?.GetUnityContextObject();
-                if (context)
-                {
-                    EditorGUIUtility.PingObject(context);
-                }
+                Message.TryPingContextObject(false);
             }
             else if (evt.clickCount == 2 && !string.IsNullOrEmpty(Message?.customData))
             {
@@ -232,6 +227,12 @@ namespace GBG.EditorMessages.Editor
             if (!string.IsNullOrEmpty(Message.context))
             {
                 menu.AddItem(new GUIContent("Copy Context"), false, () => EditorGUIUtility.systemCopyBuffer = Message.context);
+            }
+
+            // Show Context Object In Scene
+            if (!Message.GetUnityContextObject() && Message.TryGetContextOwnerSceneAsset(out SceneAsset sceneAsset))
+            {
+                menu.AddItem(new GUIContent("Reveal Context Object in Scene"), false, () => Message.TryPingContextObject(true));
             }
 
             // Copy Custom Data

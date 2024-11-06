@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
-//using UObject = UnityEngine.Object;
+using UObject = UnityEngine.Object;
 
 namespace GBG.EditorMessages.Editor
 {
@@ -21,6 +21,8 @@ namespace GBG.EditorMessages.Editor
 
         #endregion
 
+
+        #region Icon & Font
 
         //private static Font _monospaceFont;
         private static FontAsset _monospaceFontAsset;
@@ -91,11 +93,66 @@ namespace GBG.EditorMessages.Editor
             return EditorGUIUtility.IconContent("animation.play").image;
         }
 
+        #endregion
 
-        //public static void ClearAll()
-        //{
-        //    _monospaceFontAsset.DestroyAuto();
-        //}
+
+        #region Scene Object
+
+        public static void TryPingContextObject(this Message message, bool openOwnerScene)
+        {
+            if (message == null || string.IsNullOrWhiteSpace(message.context))
+            {
+                return;
+            }
+
+            UObject context = message.GetUnityContextObject();
+            if (context)
+            {
+                EditorGUIUtility.PingObject(context);
+                return;
+            }
+
+            if (!message.TryGetContextOwnerSceneAsset(out SceneAsset sceneAsset))
+            {
+                return;
+            }
+
+            if (!openOwnerScene)
+            {
+                EditorGUIUtility.PingObject(sceneAsset);
+                return;
+            }
+
+            AssetDatabase.OpenAsset(sceneAsset);
+            message.TryPingContextObject(false);
+        }
+
+        public static bool TryGetContextOwnerSceneAsset(this Message message, out SceneAsset sceneAsset)
+        {
+            sceneAsset = null;
+            if (message == null || string.IsNullOrWhiteSpace(message.context))
+            {
+                return false;
+            }
+
+            if (!GlobalObjectId.TryParse(message.context, out GlobalObjectId globalObjectId))
+            {
+                return false;
+            }
+
+            string sceneGuid = globalObjectId.assetGUID.ToString();
+            string scenePath = AssetDatabase.GUIDToAssetPath(sceneGuid);
+            if (string.IsNullOrEmpty(scenePath) || !scenePath.EndsWith(".unity", StringComparison.OrdinalIgnoreCase))
+            {
+                return false;
+            }
+
+            sceneAsset = AssetDatabase.LoadAssetAtPath<SceneAsset>(scenePath);
+            return sceneAsset;
+        }
+
+        #endregion
+
 
         //public static void DestroyAuto(this UObject obj)
         //{

@@ -99,16 +99,15 @@ namespace GBG.EditorMessages
                 return;
             }
 
+            this.context = context.ToString();
+
 #if UNITY_EDITOR
-            if (_contextObjectCache)
+            GlobalObjectId globalObjId = GlobalObjectId.GetGlobalObjectIdSlow(_contextObjectCache);
+            if (!globalObjId.assetGUID.Empty())
             {
-                GlobalObjectId globalObjId = GlobalObjectId.GetGlobalObjectIdSlow(_contextObjectCache);
                 this.context = globalObjId.ToString();
-                return;
             }
 #endif
-
-            this.context = context.ToString();
         }
 
         public UObject GetUnityContextObject()
