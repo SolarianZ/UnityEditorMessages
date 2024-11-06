@@ -63,17 +63,7 @@ namespace GBG.EditorMessages.Editor
 
             float iconSize = EditorMessageUtility.GlobalIconSize;
 
-            TypeImage = new Image
-            {
-                style =
-                {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            TypeImage = EditorMessageUtility.NewImage();
             Add(TypeImage);
 
             MessageLabel = new Label
@@ -130,19 +120,8 @@ namespace GBG.EditorMessages.Editor
 
         private Image CreateMessageTypeImage(Texture defaultIcon, float iconSize)
         {
-            Image image = new Image
-            {
-                image = defaultIcon,
-                style =
-                {
-                    display = ShowMessageTypeCount ? DisplayStyle.Flex : DisplayStyle.None,
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            Image image = EditorMessageUtility.NewImage(defaultIcon,
+                display: ShowMessageTypeCount ? DisplayStyle.Flex : DisplayStyle.None);
             return image;
         }
 

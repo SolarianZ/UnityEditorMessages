@@ -2,6 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using UnityEngine.UIElements;
 using UObject = UnityEngine.Object;
 
 namespace GBG.EditorMessages.Editor
@@ -92,6 +93,26 @@ namespace GBG.EditorMessages.Editor
         public static Texture GetCustomDataIcon()
         {
             return EditorGUIUtility.IconContent("animation.play").image;
+        }
+
+
+        public static Image NewImage(Texture image = null, string tooltip = null, DisplayStyle display = DisplayStyle.Flex)
+        {
+            Image imageElement = new Image
+            {
+                tooltip = tooltip,
+                image = image,
+                style =
+                {
+                    display = display,
+                    alignSelf = Align.Center,
+                    minWidth = GlobalIconSize,
+                    maxWidth = GlobalIconSize,
+                    minHeight = GlobalIconSize,
+                    maxHeight = GlobalIconSize,
+                }
+            };
+            return imageElement;
         }
 
         #endregion

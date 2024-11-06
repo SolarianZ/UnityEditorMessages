@@ -202,19 +202,8 @@ namespace GBG.EditorMessages.Editor
             toolbar.Add(_searchField);
 
             // Regex Error Image
-            _regexErrorImage = new Image
-            {
-                image = EditorMessageUtility.GetErrorIcon(),
-                style =
-                {
-                    alignSelf = Align.Center,
-                    display = DisplayStyle.None,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            _regexErrorImage = EditorMessageUtility.NewImage(EditorMessageUtility.GetErrorIcon(),
+                display: DisplayStyle.None);
             toolbar.Add(_regexErrorImage);
 
             // Regex Toggle
@@ -329,6 +318,14 @@ namespace GBG.EditorMessages.Editor
             if (Source != null)
             {
                 _sourcedInstanceDict.Remove(Source);
+            }
+        }
+
+        private void ShowButton(Rect pos)
+        {
+            if (GUI.Button(pos, EditorGUIUtility.IconContent("_Help"), GUI.skin.FindStyle("IconButton")))
+            {
+                Application.OpenURL("https://github.com/SolarianZ/UnityEditorMessages");
             }
         }
 

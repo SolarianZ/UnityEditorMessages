@@ -18,17 +18,7 @@ namespace GBG.EditorMessages.Editor
 
             float iconSize = EditorMessageUtility.GlobalIconSize;
 
-            _typeImage = new Image
-            {
-                style =
-                {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            _typeImage = EditorMessageUtility.NewImage();
             Insert(0, _typeImage);
         }
 

@@ -47,17 +47,7 @@ namespace GBG.EditorMessages.Editor
             };
             Add(LineNumberLabel);
 
-            TypeImage = new Image
-            {
-                style =
-                {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            TypeImage = EditorMessageUtility.NewImage();
             Add(TypeImage);
 
             TimestampLabel = new Label
@@ -98,32 +88,10 @@ namespace GBG.EditorMessages.Editor
             };
             Add(MessageLabel);
 
-            ContextImage = new Image
-            {
-                tooltip = "This message has context.",
-                style =
-                {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            ContextImage = EditorMessageUtility.NewImage(tooltip: "This message has context.");
             Add(ContextImage);
 
-            CustomDataImage = new Image
-            {
-                tooltip = "This message has custom data.",
-                style =
-                {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                }
-            };
+            CustomDataImage = EditorMessageUtility.NewImage(tooltip: "This message has custom data.");
             Add(CustomDataImage);
 
             RegisterCallback<ClickEvent>(OnClick);

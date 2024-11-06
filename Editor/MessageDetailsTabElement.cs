@@ -15,19 +15,7 @@ namespace GBG.EditorMessages.Editor
             style.height = iconSize;
             this.tooltip = tooltip;
 
-            Icon = new Image
-            {
-                image = texture,
-                style =
-                {
-                    alignSelf = Align.Center,
-                    minWidth = iconSize,
-                    maxWidth = iconSize,
-                    minHeight = iconSize,
-                    maxHeight = iconSize,
-                    //backgroundColor = inactiveColor,
-                }
-            };
+            Icon = EditorMessageUtility.NewImage(texture);
             Add(Icon);
 
             RegisterCallback<ClickEvent>(evt => onClick?.Invoke());
