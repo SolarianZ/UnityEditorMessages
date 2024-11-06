@@ -2,6 +2,8 @@
 
 在Unity Editor中查看和处理自定义消息的工具。<br/>A tool to view and process custom messages in Unity Editor.
 
+**注意**：该工具不是用来取代Unity Editor内置的Console窗口的，而是用于配合其他Editor工具使用的（专门显示该工具的日志，避免和其他日志混杂）。<br/>**Note**: This tool is not intended to replace the built-in Console window of Unity Editor, but to be used together with other Editor tools (to display the logs of this tool, avoiding being mixed with other logs).
+
 ## 功能<br/>Features
 
 消息可以指定类型、时间戳、标签、内容、上下文和自定义数据。<br/>Messages can specify type, timestamp, label, content, context, and custom data.
