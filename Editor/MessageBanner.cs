@@ -60,9 +60,6 @@ namespace GBG.EditorMessages.Editor
             style.paddingRight = 4;
             style.height = 20;
 
-
-            float iconSize = EditorMessageUtility.GlobalIconSize;
-
             TypeImage = EditorMessageUtility.NewImage();
             Add(TypeImage);
 
@@ -94,19 +91,19 @@ namespace GBG.EditorMessages.Editor
             };
             Add(MessageLabel);
 
-            InfoTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetInfoIcon(true), iconSize);
+            InfoTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetInfoIcon(true));
             Add(InfoTypeImage);
 
             InfoCountLabel = CreateMessageTypeCountLabel();
             Add(InfoCountLabel);
 
-            WarningTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetWarningIcon(true), iconSize);
+            WarningTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetWarningIcon(true));
             Add(WarningTypeImage);
 
             WarningCountLabel = CreateMessageTypeCountLabel();
             Add(WarningCountLabel);
 
-            ErrorTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetErrorIcon(true), iconSize);
+            ErrorTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetErrorIcon(true));
             Add(ErrorTypeImage);
 
             ErrorCountLabel = CreateMessageTypeCountLabel();
@@ -118,7 +115,7 @@ namespace GBG.EditorMessages.Editor
             InitializeMessageSwitch();
         }
 
-        private Image CreateMessageTypeImage(Texture defaultIcon, float iconSize)
+        private Image CreateMessageTypeImage(Texture defaultIcon)
         {
             Image image = EditorMessageUtility.NewImage(defaultIcon,
                 display: ShowMessageTypeCount ? DisplayStyle.Flex : DisplayStyle.None);
@@ -157,6 +154,7 @@ namespace GBG.EditorMessages.Editor
         {
             CurrentMessageIndex = (Messages?.Count ?? 0) - 1;
 
+            // ReSharper disable once PossibleNullReferenceException
             Message message = CurrentMessageIndex > -1 ? Messages[CurrentMessageIndex] : null;
             SetMessage(message);
 
@@ -281,6 +279,7 @@ namespace GBG.EditorMessages.Editor
             }
 
             CurrentMessageIndex++;
+            // ReSharper disable once PossibleNullReferenceException
             if (CurrentMessageIndex == Messages.Count)
             {
                 CurrentMessageIndex = 0;

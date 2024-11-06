@@ -5,7 +5,6 @@ namespace GBG.EditorMessages.Editor
 {
     public class MessageDetailsElement : VisualElement
     {
-        private readonly VisualElement _typeToggleContainer;
         private readonly MessageDetailsTabElement _messageTab;
         private readonly MessageDetailsTabElement _contextTab;
         private readonly MessageDetailsTabElement _customDataTab;
@@ -25,7 +24,7 @@ namespace GBG.EditorMessages.Editor
             #region Details Type Toggle
 
             // Type Toggle Container
-            _typeToggleContainer = new VisualElement
+            VisualElement tabContainer = new VisualElement
             {
                 style =
                 {
@@ -37,19 +36,19 @@ namespace GBG.EditorMessages.Editor
                     paddingBottom = 1,
                 }
             };
-            Add(_typeToggleContainer);
+            Add(tabContainer);
 
             _messageTab = new MessageDetailsTabElement(EditorMessageUtility.GetInfoIcon(),
                 "Message", OnClickMessageTab);
-            _typeToggleContainer.Add(_messageTab);
+            tabContainer.Add(_messageTab);
 
             _contextTab = new MessageDetailsTabElement(EditorMessageUtility.GetContextIcon(),
                 "Context", OnClickContextTab);
-            _typeToggleContainer.Add(_contextTab);
+            tabContainer.Add(_contextTab);
 
             _customDataTab = new MessageDetailsTabElement(EditorMessageUtility.GetCustomDataIcon(),
                 "Custom Data", OnClickCustomDataTab);
-            _typeToggleContainer.Add(_customDataTab);
+            tabContainer.Add(_customDataTab);
 
             #endregion
 

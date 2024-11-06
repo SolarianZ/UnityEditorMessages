@@ -32,8 +32,6 @@ namespace GBG.EditorMessages.Editor
             style.paddingRight = 4;
             style.minWidth = 100;
 
-            float iconSize = EditorMessageUtility.GlobalIconSize;
-
             LineNumberLabel = new Label
             {
                 style =
