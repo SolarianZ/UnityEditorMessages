@@ -29,7 +29,7 @@ namespace GBG.EditorMessages.Editor
             {
                 style =
                 {
-                    backgroundColor = EditorMessageUtility.InactiveColor,
+                    backgroundColor = EditorMessageUtility.TabBackgroundColor,
                     width = iconSize + 2,
                     paddingLeft = 1,
                     //paddingRight = 1,
@@ -119,27 +119,27 @@ namespace GBG.EditorMessages.Editor
         {
             _contentLabel.text = _message?.message;
 
-            _messageTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
-            _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
-            _customDataTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+            _messageTab.style.backgroundColor = EditorMessageUtility.TabActiveColor;
+            _contextTab.style.backgroundColor = EditorMessageUtility.TabInactiveColor;
+            _customDataTab.style.backgroundColor = EditorMessageUtility.TabInactiveColor;
         }
 
         private void OnClickContextTab()
         {
             _contentLabel.text = _message?.context;
 
-            _messageTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
-            _contextTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
-            _customDataTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
+            _messageTab.style.backgroundColor = EditorMessageUtility.TabInactiveColor;
+            _contextTab.style.backgroundColor = EditorMessageUtility.TabActiveColor;
+            _customDataTab.style.backgroundColor = EditorMessageUtility.TabInactiveColor;
         }
 
         private void OnClickCustomDataTab()
         {
             _contentLabel.text = _message?.customData;
 
-            _messageTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
-            _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;
-            _customDataTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
+            _messageTab.style.backgroundColor = EditorMessageUtility.TabInactiveColor;
+            _contextTab.style.backgroundColor = EditorMessageUtility.TabInactiveColor;
+            _customDataTab.style.backgroundColor = EditorMessageUtility.TabActiveColor;
         }
     }
 }

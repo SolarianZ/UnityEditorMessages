@@ -12,12 +12,13 @@ namespace GBG.EditorMessages.Editor
 
         public static int GlobalIconSize = 16;
 
-        public static Color ActiveColor => EditorGUIUtility.isProSkin
-                ? new Color(0.22f, 0.22f, 0.22f, 1f)
-                : new Color(0.76f, 0.76f, 0.76f, 1f);
-        public static Color InactiveColor => EditorGUIUtility.isProSkin
-                ? new Color(1f, 1f, 1f, 0.15f)
-                : new Color(1f, 1f, 1f, 0.26f);
+        public static Color TabActiveColor => EditorGUIUtility.isProSkin
+                ? new Color32(56, 56, 56, 255)
+                : new Color32(200, 200, 200, 255);
+        public static Color TabInactiveColor => Color.clear;
+        public static Color TabBackgroundColor => EditorGUIUtility.isProSkin
+                ? new Color32(255, 255, 255, 40)
+                : new Color32(255, 255, 255, 150);
 
         #endregion
 
