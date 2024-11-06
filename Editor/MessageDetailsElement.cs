@@ -1,5 +1,4 @@
 ﻿using System;
-using UnityEditor.VersionControl;
 using UnityEngine.UIElements;
 
 namespace GBG.EditorMessages.Editor
@@ -118,7 +117,7 @@ namespace GBG.EditorMessages.Editor
 
         private void OnClickMessageTab()
         {
-            _contentLabel.text = _message?.content;
+            _contentLabel.text = _message?.message;
 
             _messageTab.style.backgroundColor = EditorMessageUtility.ActiveColor;
             _contextTab.style.backgroundColor = EditorMessageUtility.InactiveColor;

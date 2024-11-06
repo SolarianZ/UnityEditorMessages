@@ -15,11 +15,11 @@ namespace GBG.EditorMessages.Editor
         private static Dictionary<object, MessageViewer> _sourcedInstanceDict;
 
         /// <summary>
-        /// ����Ϣ�鿴�����ڡ�
+        /// 打开消息查看器窗口。
         /// </summary>
-        /// <param name="messages">��Ϣ�б���</param>
-        /// <param name="source">����Դ��������Դ��Ϊnullʱ����Ϣ�鿴�����ڻ��Զ��رա�������null������Ϣ�鿴�����ڲ����Զ��رա�</param>
-        /// <param name="sourceName">����Դ�����֡����������Ϣ�鿴�����ڱ����С�</param>
+        /// <param name="messages">消息列表。</param>
+        /// <param name="source">调用源。当调用源变为null时，消息查看器窗口会自动关闭。若传入null，则消息查看器窗口不会自动关闭。</param>
+        /// <param name="sourceName">调用源的名字。会出现在消息查看器窗口标题中。</param>
         /// <returns></returns>
         public static MessageViewer Open(IList<Message> messages, object source, string sourceName)
         {
@@ -468,7 +468,7 @@ namespace GBG.EditorMessages.Editor
                 return true;
             }
 
-            if (string.IsNullOrEmpty(message.content))
+            if (string.IsNullOrEmpty(message.message))
             {
                 return false;
             }
@@ -477,7 +477,7 @@ namespace GBG.EditorMessages.Editor
             {
                 try
                 {
-                    return Regex.IsMatch(message.content, _searchPattern, RegexOptions.IgnoreCase);
+                    return Regex.IsMatch(message.message, _searchPattern, RegexOptions.IgnoreCase);
                 }
                 catch (Exception ex)
                 {
@@ -487,7 +487,7 @@ namespace GBG.EditorMessages.Editor
                 }
             }
 
-            return message.content.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase);
+            return message.message.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase);
         }
 
         private void TryClose()

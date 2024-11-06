@@ -14,7 +14,7 @@ namespace GBG.EditorMessages.Editor
         public Image TypeImage { get; }
         public Label TimestampLabel { get; }
         public Label TimestampSeparatorLabel { get; }
-        public Label ContentLabel { get; }
+        public Label MessageLabel { get; }
         public Image ContextImage { get; }
         public Image CustomDataImage { get; }
 
@@ -85,7 +85,7 @@ namespace GBG.EditorMessages.Editor
             };
             Add(TimestampSeparatorLabel);
 
-            ContentLabel = new Label
+            MessageLabel = new Label
             {
                 style =
                 {
@@ -97,7 +97,7 @@ namespace GBG.EditorMessages.Editor
                     unityFontDefinition = new StyleFontDefinition(EditorMessageUtility.GetMonospaceFontAsset()),
                 }
             };
-            Add(ContentLabel);
+            Add(MessageLabel);
 
             ContextImage = new Image
             {
@@ -139,7 +139,7 @@ namespace GBG.EditorMessages.Editor
             LineNumber = lineNumber;
             LineNumberLabelWidth = lineNumberLabelWidth;
             TypeImage.image = EditorMessageUtility.GetMessageTypeIcon(message.type);
-            ContentLabel.text = message.content;
+            MessageLabel.text = message.message;
 
             UpdateLineNumberLabel();
             UpdateTimestampLabel();
@@ -225,8 +225,8 @@ namespace GBG.EditorMessages.Editor
         {
             GenericMenu menu = new GenericMenu();
 
-            // Copy Content
-            menu.AddItem(new GUIContent("Copy Content"), false, () => EditorGUIUtility.systemCopyBuffer = Message.content);
+            // Copy Message
+            menu.AddItem(new GUIContent("Copy Message"), false, () => EditorGUIUtility.systemCopyBuffer = Message.message);
 
             // Copy Context
             if (!string.IsNullOrEmpty(Message.context))

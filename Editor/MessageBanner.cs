@@ -9,7 +9,7 @@ namespace GBG.EditorMessages.Editor
     public class MessageBanner : VisualElement
     {
         public Image TypeImage { get; }
-        public Label ContentLabel { get; }
+        public Label MessageLabel { get; }
         public Image InfoTypeImage { get; }
         public Label InfoCountLabel { get; }
         public Image WarningTypeImage { get; }
@@ -76,7 +76,7 @@ namespace GBG.EditorMessages.Editor
             };
             Add(TypeImage);
 
-            ContentLabel = new Label
+            MessageLabel = new Label
             {
                 style =
                 {
@@ -102,7 +102,7 @@ namespace GBG.EditorMessages.Editor
                     //},
                 }
             };
-            Add(ContentLabel);
+            Add(MessageLabel);
 
             InfoTypeImage = CreateMessageTypeImage(EditorMessageUtility.GetInfoIcon(true), iconSize);
             Add(InfoTypeImage);
@@ -191,8 +191,8 @@ namespace GBG.EditorMessages.Editor
         private void SetMessage(Message message)
         {
             TypeImage.image = message != null ? EditorMessageUtility.GetMessageTypeIcon(message.type) : null;
-            ContentLabel.text = message?.content;
-            ContentLabel.tooltip = message?.content;
+            MessageLabel.text = message?.message;
+            MessageLabel.tooltip = message?.message;
         }
 
         private void SetMessageCount(MessageType messageType, int count)
