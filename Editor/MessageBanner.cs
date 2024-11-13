@@ -37,6 +37,8 @@ namespace GBG.EditorMessages.Editor
         public IList<Message> Messages { get; private set; }
         public int CurrentMessageIndex { get; private set; }
 
+        private int _messageCountCache;
+
 
         public MessageBanner(object source, string sourceName,
             bool showMessageTypeCount = true, bool allowClearMessages = false)
@@ -116,6 +118,14 @@ namespace GBG.EditorMessages.Editor
             RegisterCallback<ContextClickEvent>(OnContextClick);
 
             InitializeMessageSwitch();
+
+            schedule.Execute(() =>
+            {
+                if ((Messages?.Count ?? 0) != _messageCountCache)
+                {
+                    Refresh();
+                }
+            }).Every(200);
         }
 
         private Image CreateMessageTypeImage(Texture defaultIcon)
@@ -160,8 +170,8 @@ namespace GBG.EditorMessages.Editor
             // ReSharper disable once PossibleNullReferenceException
             Message message = CurrentMessageIndex > -1 ? Messages[CurrentMessageIndex] : null;
             SetMessage(message);
-
             Messages.CountByType(out int infoCount, out int warningCount, out int errorCount);
+            _messageCountCache = Messages?.Count ?? 0;
             SetMessageCount(MessageType.Info, infoCount);
             SetMessageCount(MessageType.Warning, warningCount);
             SetMessageCount(MessageType.Error, errorCount);

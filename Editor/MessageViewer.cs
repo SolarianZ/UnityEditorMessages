@@ -325,7 +325,7 @@ namespace GBG.EditorMessages.Editor
 
         private void Update()
         {
-            if (Messages != null && Messages.Count != _messageCountCache)
+            if ((Messages?.Count ?? 0) != _messageCountCache)
             {
                 Refresh();
             }
@@ -416,7 +416,7 @@ namespace GBG.EditorMessages.Editor
             _tagList.Insert(0, TagAll);
 
             Messages.CountByType(out int infoCount, out int warningCount, out int errorCount);
-            _messageCountCache = infoCount + warningCount + errorCount;
+            _messageCountCache = Messages?.Count ?? 0;
             _infoMessageToggle.SetMessageCount(infoCount);
             _warningMessageToggle.SetMessageCount(warningCount);
             _errorMessageToggle.SetMessageCount(errorCount);
