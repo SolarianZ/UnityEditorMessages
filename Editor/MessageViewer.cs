@@ -21,7 +21,8 @@ namespace GBG.EditorMessages.Editor
         /// <param name="source">调用源。当调用源变为null时，消息查看器窗口会自动关闭。若传入null，则消息查看器窗口不会自动关闭。</param>
         /// <param name="sourceName">调用源的名字。会出现在消息查看器窗口标题中。</param>
         /// <returns></returns>
-        public static MessageViewer Open(IList<Message> messages, object source, string sourceName)
+        public static MessageViewer Open(IList<Message> messages, object source, string sourceName,
+            bool allowClearMessages = true)
         {
             if (source == null)
             {
@@ -32,6 +33,7 @@ namespace GBG.EditorMessages.Editor
                     _sourcelessInstance._sourceless = true;
                 }
 
+                _sourcelessInstance._showClearButton = allowClearMessages;
                 _sourcelessInstance.SetMessages(messages);
                 _sourcelessInstance.Show();
                 _sourcelessInstance.Focus();
@@ -47,15 +49,16 @@ namespace GBG.EditorMessages.Editor
 
             viewer.titleContent = new GUIContent($"Message Viewer({sourceName ?? source})");
             viewer.Source = source;
+            viewer._showClearButton = allowClearMessages;
             viewer.SetMessages(messages);
             viewer.Show();
             viewer.Focus();
             return viewer;
         }
 
-        public static MessageViewer Open(object source, string sourceName)
+        public static MessageViewer Open(object source, string sourceName, bool allowClearMessages = true)
         {
-            return Open(null, source, sourceName);
+            return Open(null, source, sourceName, allowClearMessages);
         }
 
 
@@ -69,6 +72,7 @@ namespace GBG.EditorMessages.Editor
         private MessageTypeToggle _infoMessageToggle;
         private MessageTypeToggle _warningMessageToggle;
         private MessageTypeToggle _errorMessageToggle;
+        private ToolbarButton _clearButton;
         private ListView _messageListView;
         private MessageDetailsElement _messageDetailsElement;
 
@@ -110,6 +114,9 @@ namespace GBG.EditorMessages.Editor
         [SerializeField]
         [HideInInspector]
         private bool _showErrorMessage = true;
+        [SerializeField]
+        [HideInInspector]
+        private bool _showClearButton;
 
         #endregion
 
@@ -248,6 +255,19 @@ namespace GBG.EditorMessages.Editor
             _errorMessageToggle.SetMessageType(MessageType.Error, 0);
             _errorMessageToggle.RegisterValueChangedCallback(OnMessageTypeToggleChanged);
             typeToggleContainer.Add(_errorMessageToggle);
+
+            // Clear Button
+            _clearButton = new ToolbarImageButton(EditorMessageUtility.GetClearIcon(), ClearMessages)
+            {
+                tooltip = "Clear All Messages",
+                style =
+                {
+                    width = 22,
+                    flexShrink = 0,
+                    display = _showClearButton ? DisplayStyle.Flex : DisplayStyle.None,
+                }
+            };
+            toolbar.Add(_clearButton);
 
             #endregion
 
@@ -485,6 +505,12 @@ namespace GBG.EditorMessages.Editor
             }
 
             return message.message.Contains(_searchPattern, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void ClearMessages()
+        {
+            Messages?.Clear();
+            Refresh();
         }
 
         private void TryClose()

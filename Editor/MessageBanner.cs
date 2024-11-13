@@ -31,14 +31,16 @@ namespace GBG.EditorMessages.Editor
             }
         }
 
-        public object Source { get; private set; }
-        public string SourceName { get; private set; }
+        public object Source { get; set; }
+        public string SourceName { get; set; }
+        public bool AllowClearMessages { get; set; }
         public IList<Message> Messages { get; private set; }
         public int CurrentMessageIndex { get; private set; }
 
 
-        public MessageBanner(object source, string sourceName, bool showMessageTypeCount = true)
-            : this(null, source, sourceName, showMessageTypeCount) { }
+        public MessageBanner(object source, string sourceName,
+            bool showMessageTypeCount = true, bool allowClearMessages = false)
+            : this(null, source, sourceName, showMessageTypeCount, allowClearMessages) { }
 
         /// <summary>
         /// 消息横幅。
@@ -48,12 +50,13 @@ namespace GBG.EditorMessages.Editor
         /// <param name="sourceName">调用源的名字。</param>
         /// <param name="showMessageTypeCount">是否显示各类型消息的计数。</param>
         public MessageBanner(IList<Message> messages, object source, string sourceName,
-            bool showMessageTypeCount = true)
+            bool showMessageTypeCount = true, bool allowClearMessages = false)
         {
             _showMessageTypeCount = showMessageTypeCount;
             Messages = messages;
             Source = source;
             SourceName = sourceName;
+            AllowClearMessages = allowClearMessages;
 
             style.flexDirection = FlexDirection.Row;
             style.paddingLeft = 4;
@@ -208,9 +211,9 @@ namespace GBG.EditorMessages.Editor
 
         private void OnClick(ClickEvent evt)
         {
-            if (evt.clickCount == 2)
+            if (evt.clickCount == 2 && Messages != null && Messages.Count > 0)
             {
-                MessageViewer.Open(Messages, Source, SourceName);
+                MessageViewer.Open(Messages, Source, SourceName, AllowClearMessages);
             }
         }
 

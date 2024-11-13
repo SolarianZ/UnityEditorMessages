@@ -95,13 +95,20 @@ namespace GBG.EditorMessages.Editor
             return EditorGUIUtility.IconContent("animation.play").image;
         }
 
+        public static Texture GetClearIcon()
+        {
+            return EditorGUIUtility.IconContent("clear").image;
+        }
 
-        public static Image NewImage(Texture image = null, string tooltip = null, DisplayStyle display = DisplayStyle.Flex)
+
+        public static Image NewImage(Texture image = null, string tooltip = null,
+            DisplayStyle display = DisplayStyle.Flex, PickingMode pickingMode = PickingMode.Ignore)
         {
             Image imageElement = new Image
             {
                 tooltip = tooltip,
                 image = image,
+                pickingMode = pickingMode,
                 style =
                 {
                     display = display,
